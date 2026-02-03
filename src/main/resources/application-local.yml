@@ -1,5 +1,5 @@
 spring:
   datasource:
-    url:
-    username:
-    password: 
+    url: jdbc:postgresql://localhost:5433/unsent_db
+    username: unsent_user
+    password: unsent_pass
