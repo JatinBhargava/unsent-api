@@ -1,38 +1,35 @@
 pipeline {
-    agent any
+    agent none
 
     environment {
         IMAGE_NAME = "jatindocker623/unsent-api"
-        IMAGE_TAG  = "1.0.0-SNAPSHOT"
+        VERSION = "1.0.0-SNAPSHOT"
     }
 
     stages {
 
-        stage('Init') {
-            steps {
-                echo "Running pipeline for branch: ${env.BRANCH_NAME}"
-                sh 'java -version'
-                sh 'mvn -version'
-                sh 'docker version'
+        stage('Build with Maven') {
+            agent {
+                docker {
+                    image 'maven:3.9.9-eclipse-temurin-21'
+                    args '-v /root/.m2:/root/.m2'
+                }
             }
-        }
-
-        stage('Build & Test') {
             steps {
-                sh 'mvn clean verify'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
         stage('Build Docker Image') {
-            when {
-                anyOf {
-                    branch 'develop'
-                    branch 'main'
+            agent {
+                docker {
+                    image 'docker:27'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
                 sh """
-                  docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                  docker build -t ${IMAGE_NAME}:${VERSION} .
                 """
             }
         }
@@ -41,18 +38,27 @@ pipeline {
             when {
                 anyOf {
                     branch 'develop'
-                    branch 'main'
+                    branch 'master'
+                }
+            }
+            agent {
+                docker {
+                    image 'docker:27'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
-                withCredentials([usernamePassword(
+                withCredentials([
+                  usernamePassword(
                     credentialsId: 'dockerhub-creds',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
-                )]) {
+                  )
+                ]) {
                     sh """
-                      echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
-                      docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                      echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                      docker push ${IMAGE_NAME}:${VERSION}
+                      docker logout
                     """
                 }
             }
@@ -65,9 +71,6 @@ pipeline {
         }
         failure {
             echo "Pipeline FAILED for branch: ${env.BRANCH_NAME}"
-        }
-        always {
-            sh 'docker logout || true'
         }
     }
 }
