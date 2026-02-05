@@ -11,22 +11,10 @@ pipeline {
                 sh './mvnw -version'
             }
         }
-        stage('Build') {
-            when { expression { shouldRun("build") } }
+        stage('Build & Test & Package') {
+            when { expression { shouldRun("mvnDeploy") } }
             steps {
-                sh './mvnw clean compile'
-            }
-        }
-        stage('Test') {
-            when { expression { shouldRun("test") } }
-            steps {
-                sh './mvnw test'
-            }
-        }
-        stage('Package') {
-            when { expression { shouldRun("package") } }
-            steps {
-                sh './mvnw package'
+                sh './mvnw clean verify'
             }
         }
         stage('Resolve Version') {
@@ -71,11 +59,11 @@ pipeline {
 def shouldRun(String stage) {
     switch (true) {
         case env.BRANCH_NAME.startsWith("feature/"):
-            return ["init", "build", "test"].contains(stage)
+            return ["init", "mvnDeploy"].contains(stage)
         case env.BRANCH_NAME == "develop":
-            return ["init", "build", "test", "package", "docker"].contains(stage)
+            return ["init", "mvnDeploy","docker","push"].contains(stage)
         case env.BRANCH_NAME == "master":
-            return ["init", "build", "test", "package", "docker", "push"].contains(stage)
+            return ["init", "mvnDeploy","docker","push"].contains(stage)
         default:
             return false
     }
