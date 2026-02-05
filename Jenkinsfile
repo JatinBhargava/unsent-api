@@ -11,7 +11,7 @@ pipeline {
                 sh './mvnw -version'
             }
         }
-        stage('Build & Test & Package') {
+        stage('Build') {
             when { expression { shouldRun("mvnDeploy") } }
             steps {
                 sh './mvnw clean verify'
