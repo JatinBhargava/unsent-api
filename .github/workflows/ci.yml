@@ -61,9 +61,14 @@ jobs:
 
       - name: Build Docker Images
         run: |
-          docker build -f unsent-api/Dockerfile \ -t $DOCKER_REGISTRY/unsent-api:$VERSION .
-          docker build -t $DOCKER_REGISTRY/unsent-listener:$VERSION unsent-listener
-          docker build -t $DOCKER_REGISTRY/unsent-batch:$VERSION unsent-batch
+          docker build -f unsent-api/Dockerfile \
+            -t $DOCKER_REGISTRY/unsent-api:$VERSION .
+
+          docker build -f unsent-listener/Dockerfile \
+            -t $DOCKER_REGISTRY/unsent-listener:$VERSION .
+
+          docker build -f unsent-batch/Dockerfile \
+            -t $DOCKER_REGISTRY/unsent-batch:$VERSION .
 
       - name: Push Docker Images
         run: |
