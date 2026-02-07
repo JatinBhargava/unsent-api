@@ -111,4 +111,4 @@ You don’t need to understand the full product vision to contribute — we valu
 git clone https://github.com/JatinBhargava/unsent-core.git
 
 # Start services
-docker-compose up
+docker compose up -d 
