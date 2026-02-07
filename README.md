@@ -23,6 +23,7 @@ This project explores a different direction:
 
 We’re building a space where writing can **start privately**, **grow socially**, and **scale sustainably**.
 
+
 ---
 
 ## 🎯 Project Goals
@@ -101,6 +102,22 @@ You don’t need to understand the full product vision to contribute — we valu
 - Design for scale, but build pragmatically
 - Write code that someone else can maintain
 - Ask questions — discussion is encouraged
+
+---
+
+## 📌 Stories Board
+
+All user stories, sprint planning, and PI-level tracking live here:
+
+🔗 **Stories (Notion Board)**  
+**Backlog & Sprint Tracking:**  
+[Stories Board](https://deadpan-vegetarian-956.notion.site/3007b497118f80ce88fdde290298d016?v=efeabdc05f9d49ab858b5f586762d843)
+
+Use this board to:
+- View sprint-wise user stories
+- Track PI progress
+- Update status, priority, and ownership
+- Groom and refine backlog items
 
 ---
 
