@@ -1,0 +1,14 @@
+# Jenkins
+jenkins_home/
+docker/jenkins/jenkins_home/
+
+# Docker
+*.log
+.env
+
+# Maven
+**/target/
+
+# IDE
+.idea/
+.vscode/

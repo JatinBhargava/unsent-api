@@ -3,33 +3,39 @@ version: "3.9"
 services:
   postgres:
     image: postgres:15
-    platform: linux/amd64
     container_name: unsent-postgres
-    restart: unless-stopped
+    ports:
+      - "5433:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./docker/postgres/init:/docker-entrypoint-initdb.d
 
   api:
-    #build: .
     image: jatindocker623/unsent-api:1.0.0-SNAPSHOT
     container_name: unsent-api
-    depends_on:
-    - postgres
     ports:
-    - "8080:8080"
-    environment:
-      JWT_SECRET: ${JWT_SECRET}
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+  listener:
+    image: jatindocker623/unsent-listener:1.0.0-SNAPSHOT
+    container_name: unsent-listener
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+
+  batch:
+    image: jatindocker623/unsent-batch:1.0.0-SNAPSHOT
+    container_name: unsent-batch
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
 
   jenkins:
     build:
@@ -38,7 +44,7 @@ services:
     container_name: jenkins
     user: root
     ports:
-      - "8081:8080"
+      - "8084:8080"
       - "50000:50000"
     volumes:
       - jenkins_data:/var/jenkins_home
