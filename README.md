@@ -108,7 +108,7 @@ You don’t need to understand the full product vision to contribute — we valu
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/open-diary-platform.git
+git clone https://github.com/JatinBhargava/unsent-core.git
 
 # Start services
 docker-compose up
