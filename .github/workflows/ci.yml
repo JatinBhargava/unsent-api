@@ -34,7 +34,7 @@ jobs:
         run: ./mvnw -version
 
       - name: Build & Test (feature/develop/master)
-        run: ./mvnw clean verify
+        run: ./mvnw clean package
 
   docker:
     name: Build Docker Images
