@@ -1,0 +1,16 @@
+# Jenkins
+jenkins_home/
+docker/jenkins/jenkins_home/
+unsent-api/docker/
+
+# Docker
+*.log
+.env
+
+# Maven
+**/target/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
