@@ -40,7 +40,6 @@ jobs:
     name: Build Docker Images
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/*'
 
     steps:
       - uses: actions/checkout@v4
