@@ -1,6 +1,7 @@
 # Jenkins
 jenkins_home/
 docker/jenkins/jenkins_home/
+unsent-api/docker/
 
 # Docker
 *.log
@@ -12,3 +13,4 @@ docker/jenkins/jenkins_home/
 # IDE
 .idea/
 .vscode/
+.DS_Store
