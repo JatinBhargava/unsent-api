@@ -40,7 +40,7 @@ jobs:
     name: Build Docker Images
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/*'
 
     steps:
       - uses: actions/checkout@v4
@@ -71,8 +71,7 @@ jobs:
           docker build -t $DOCKER_REGISTRY/unsent-listener:$VERSION unsent-listener
           docker build -t $DOCKER_REGISTRY/unsent-batch:$VERSION unsent-batch
 
-      - name: Push Images (feature/master)
-        # if: github.ref == 'refs/heads/master'
+      - name: Push Images (feature/develop/master)
         run: |
           docker push $DOCKER_REGISTRY/unsent-api:$VERSION
           docker push $DOCKER_REGISTRY/unsent-listener:$VERSION
