@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import util.Gender;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -14,4 +17,12 @@ public class RegisterRequestDTO {
     final String email;
     @JsonProperty("password")
     final String password;
+    @JsonProperty("username")
+    private final String username;
+    @JsonProperty("displayName")
+    private final String displayName;
+    @JsonProperty("gender")
+    private final String gender;
+    @JsonProperty("date_of_birth")
+    private final LocalDate dateOfBirth;
 }

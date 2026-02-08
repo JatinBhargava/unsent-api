@@ -14,6 +14,7 @@
         <module>unsent-api</module>
         <module>unsent-listener</module>
         <module>unsent-batch</module>
+        <module>unsent-common</module>
     </modules>
 
     <properties>
