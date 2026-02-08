@@ -1,11 +1,11 @@
 package com.unsent.api.entity;
 
-import entity.BaseEntity;
+import com.unsent.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import util.Gender;
+
 import java.time.LocalDate;
 
 

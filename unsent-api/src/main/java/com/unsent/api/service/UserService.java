@@ -3,7 +3,6 @@ package com.unsent.api.service;
 import com.unsent.api.entity.User;
 import com.unsent.api.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import util.Gender;
 
 import java.time.LocalDate;
 import java.util.Optional;
