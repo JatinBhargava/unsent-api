@@ -67,7 +67,7 @@ Contributors don’t need access to these to make meaningful impact.
 
 ## 🛠️ Tech Stack (Current)
 
-- **Frontend:** React.js
+- **Frontend:** [React.js](https://github.com/JatinBhargava/unsent-ui/tree/develop)
 - **Backend:**  Spring Boot
 - **Database:** PostgreSQL
 - **Cache / Queue:** Redis
