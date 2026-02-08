@@ -132,7 +132,11 @@
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>com.unsent</groupId>
+			<artifactId>unsent-common</artifactId>
+		</dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

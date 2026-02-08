@@ -1,40 +1,51 @@
 package com.unsent.api.entity;
 
+import com.unsent.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.time.LocalDate;
+
 
 @Entity
 @Table(name = "users")
-@Getter
 @NoArgsConstructor
-public class User {
+@Getter
+@Setter
+public class User extends BaseEntity {
 
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(name = "hashed_password", nullable = false)
     private String hashedPassword;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    @Column(nullable = false)
+    private String username;
 
-    @PrePersist
-    void onCreate() {
-        this.id = UUID.randomUUID();
-        this.createdAt = Instant.now();
-    }
+    @Column(name = "display_name")
+    private String displayName;
 
-    public User(String email, String hashedPassword) {
+    private String gender;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    public User(
+            String email,
+            String hashedPassword,
+            String username,
+            String displayName,
+            String gender,
+            LocalDate dateOfBirth
+    ) {
         this.email = email;
         this.hashedPassword = hashedPassword;
+        this.username = username;
+        this.displayName = displayName;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
     }
 }

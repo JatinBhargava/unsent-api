@@ -1,6 +1,5 @@
 package com.unsent.api.controller;
 
-import com.nimbusds.jose.crypto.impl.AAD;
 import com.unsent.api.dto.AuthResponseDTO;
 import com.unsent.api.dto.RegisterRequestDTO;
 import com.unsent.api.service.AuthService;

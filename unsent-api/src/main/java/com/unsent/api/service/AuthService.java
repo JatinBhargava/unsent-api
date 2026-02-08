@@ -27,7 +27,8 @@ public class AuthService {
              throw new RuntimeException("User Email ID already present.");
          }
           String hashedPassword = passwordEncoder.encode(request.getPassword());
-          userService.saveUser(request.getEmail(),hashedPassword);
+          userService.saveUser(request.getEmail(),hashedPassword,request.getUsername(),
+                  request.getDisplayName(),request.getGender(),request.getDateOfBirth());
           return jwtUtil.generateToken(request.getEmail());
     }
 
