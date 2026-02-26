@@ -1,22 +1,29 @@
 pipeline {
     agent any
+
     environment {
         DOCKER_REGISTRY = "jatindocker623"
+        DOCKER_PLATFORM = "linux/amd64"
     }
+
     stages {
+
         stage('Init') {
             when { expression { shouldRun("init") } }
             steps {
                 sh 'java -version'
                 sh './mvnw -version'
+                sh 'docker version'
             }
         }
+
         stage('Build & Test (All Modules)') {
             when { expression { shouldRun("mvnDeploy") } }
             steps {
                 sh './mvnw clean verify'
             }
         }
+
         stage('Resolve Version') {
             when { expression { shouldRun("docker") } }
             steps {
@@ -29,37 +36,18 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Images') {
+
+        stage('Setup Docker Buildx') {
             when { expression { shouldRun("docker") } }
             steps {
-                script {
-                    def services = [
-                        api: [
-                            dir: 'unsent-api',
-                            image: "${DOCKER_REGISTRY}/unsent-api"
-                        ],
-                        listener: [
-                            dir: 'unsent-listener',
-                            image: "${DOCKER_REGISTRY}/unsent-listener"
-                        ],
-                        batch: [
-                            dir: 'unsent-batch',
-                            image: "${DOCKER_REGISTRY}/unsent-batch"
-                        ]
-                    ]
-
-                    services.each { name, svc ->
-                        echo "Building image for ${name}"
-                        sh """
-                            docker build \
-                              -t ${svc.image}:${IMAGE_TAG} \
-                              ${svc.dir}
-                        """
-                    }
-                }
+                sh '''
+                  docker buildx create --use --name unsent-builder || true
+                  docker buildx inspect --bootstrap
+                '''
             }
         }
-        stage('Push Docker Images') {
+
+        stage('Build & Push Docker Images (Render)') {
             when { expression { shouldRun("push") } }
             steps {
                 withCredentials([usernamePassword(
@@ -67,38 +55,53 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
+
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+
                     script {
-                        sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-                        def images = [
-                            "${DOCKER_REGISTRY}/unsent-api:${IMAGE_TAG}",
-                            "${DOCKER_REGISTRY}/unsent-listener:${IMAGE_TAG}",
-                            "${DOCKER_REGISTRY}/unsent-batch:${IMAGE_TAG}"
+                        def services = [
+                            api: 'unsent-api',
+                            listener: 'unsent-listener',
+                            batch: 'unsent-batch'
                         ]
-                        images.each { img ->
-                            sh "docker push ${img}"
+
+                        services.each { name, dir ->
+                            echo "Building & pushing ${name} for Render (amd64)"
+
+                            sh """
+                              docker buildx build \
+                                --platform ${DOCKER_PLATFORM} \
+                                -t ${DOCKER_REGISTRY}/${name}:${IMAGE_TAG} \
+                                -t ${DOCKER_REGISTRY}/${name}:latest \
+                                --push \
+                                ${dir}
+                            """
                         }
-                        sh 'docker logout'
                     }
+
+                    sh 'docker logout'
                 }
             }
         }
     }
+
     post {
         success {
-            echo "Pipeline SUCCESS for branch: ${env.BRANCH_NAME}"
+            echo "✅ Render images published successfully for ${env.BRANCH_NAME}"
         }
         failure {
-            echo "Pipeline FAILED for branch: ${env.BRANCH_NAME}"
+            echo "❌ Pipeline FAILED for ${env.BRANCH_NAME}"
         }
     }
 }
+
 def shouldRun(String stage) {
     switch (true) {
         case env.BRANCH_NAME.startsWith("feature/"):
             return ["init", "mvnDeploy"].contains(stage)
 
         case env.BRANCH_NAME == "develop":
-            return ["init", "mvnDeploy", "docker"].contains(stage)
+            return ["init", "mvnDeploy", "docker", "push"].contains(stage)
 
         case env.BRANCH_NAME == "master":
             return ["init", "mvnDeploy", "docker", "push"].contains(stage)
