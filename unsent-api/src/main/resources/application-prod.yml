@@ -15,13 +15,15 @@ spring:
   main:
     lazy-initialization: true
 
-  spring:
-    security:
-      oauth2:
-        client:
-          registration:
-            google:
-              redirect-uri: https://unsent-api-1-0-0-snapshot.onrender.com/login/oauth2/code/google
-
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECERT}
+            scope:
+              - email
+              - profile
 server:
   port: ${PORT:8080}
