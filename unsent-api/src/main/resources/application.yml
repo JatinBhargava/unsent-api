@@ -11,6 +11,17 @@ spring:
   flyway:
     enabled: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1076054346469-dqn3thg7kqvtc3e21he1qn2a4db250j7.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+
 server:
   port: 8080
 
