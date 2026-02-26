@@ -59,24 +59,31 @@ pipeline {
                     sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
 
                     script {
-                        def services = [
-                            api: 'unsent-api',
-                            listener: 'unsent-listener',
-                            batch: 'unsent-batch'
+                    def services = [
+                        unsentApi: [
+                            dir: 'unsent-api',
+                            image: "${DOCKER_REGISTRY}/unsent-api"
+                        ],
+                        unsentListener: [
+                            dir: 'unsent-listener',
+                            image: "${DOCKER_REGISTRY}/unsent-listener"
+                        ],
+                        unsentBatch: [
+                            dir: 'unsent-batch',
+                            image: "${DOCKER_REGISTRY}/unsent-batch"
                         ]
+                    ]
 
-                        services.each { name, dir ->
-                            echo "Building & pushing ${name} for Render (amd64)"
-
-                            sh """
-                              docker buildx build \
-                                --platform ${DOCKER_PLATFORM} \
-                                -t ${DOCKER_REGISTRY}/${name}:${IMAGE_TAG} \
-                                -t ${DOCKER_REGISTRY}/${name}:latest \
-                                --push \
-                                ${dir}
-                            """
-                        }
+                    services.each { name, svc ->
+                        sh """
+                          docker buildx build \
+                            --platform linux/amd64 \
+                            -t ${svc.image}:${IMAGE_TAG} \
+                            -t ${svc.image}:latest \
+                            --push \
+                            ${svc.dir}
+                        """
+                    }
                     }
 
                     sh 'docker logout'
