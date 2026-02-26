@@ -79,7 +79,6 @@ pipeline {
                           docker buildx build \
                             --platform linux/amd64 \
                             -t ${svc.image}:${IMAGE_TAG} \
-                            -t ${svc.image}:latest \
                             --push \
                             ${svc.dir}
                         """
