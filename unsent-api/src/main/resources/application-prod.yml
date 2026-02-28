@@ -27,4 +27,4 @@ spring:
               - email
               - profile
 server:
-  port: ${PORT:8080}
+  port: ${PORT}
