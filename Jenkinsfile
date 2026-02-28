@@ -104,7 +104,7 @@ pipeline {
 def shouldRun(String stage) {
     switch (true) {
         case env.BRANCH_NAME.startsWith("feature/"):
-            return ["init", "mvnDeploy"].contains(stage)
+            return ["init", "mvnDeploy", "docker", "push"].contains(stage)
 
         case env.BRANCH_NAME == "develop":
             return ["init", "mvnDeploy", "docker", "push"].contains(stage)
