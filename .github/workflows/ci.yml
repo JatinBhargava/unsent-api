@@ -49,6 +49,9 @@ jobs:
           java-version: 21
           cache: maven
 
+      - name: Build & Package
+        run: ./mvnw clean package -DskipTests
+
       - name: Resolve Version
         run: |
           echo "VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
