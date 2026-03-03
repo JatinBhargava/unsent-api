@@ -17,13 +17,13 @@ spring:
         registration:
           google:
             client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECERT}
+            client-secret: ${CLIENT_SECRET}
             scope:
               - email
               - profile
 
 server:
-  port: 8080
+  port: 8081
 
 management:
   endpoints:

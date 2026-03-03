@@ -1,6 +1,7 @@
 package com.unsent.api.config;
 
 import com.unsent.api.Util.OAuthSuccessHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,12 +22,23 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth -> oauth
-                        .successHandler(authSuccessHandler));
+
+                // ⛔ VERY IMPORTANT
+                .exceptionHandling(ex ->
+                        ex.authenticationEntryPoint(
+                                (req, res,
+                                 authEx) -> {
+                    res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                }))
+
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers("/auth/**", "/oauth2/**", "/login/**", "/error")
+                                .permitAll().anyRequest().authenticated())
+
+                // OAuth ONLY when explicitly called
+                .oauth2Login(oauth ->
+                        oauth.successHandler(authSuccessHandler));
+
         return http.build();
     }
 }
