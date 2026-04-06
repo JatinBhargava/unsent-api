@@ -1,6 +1,15 @@
 spring:
+  config:
+    import: optional:file:.env[.properties],optional:file:../.env[.properties]
+
   application:
     name: unsent-listener
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/unsent_db}
+    username: ${SPRING_DATASOURCE_USERNAME:unsent_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:unsent_pass}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:

@@ -32,7 +32,7 @@ public class SecurityConfig {
                 }))
 
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/auth/**", "/oauth2/**", "/login/**", "/error")
+                        auth.requestMatchers("/auth/**", "/oauth2/**", "/login/**", "/error", "/**")
                                 .permitAll().anyRequest().authenticated())
 
                 // OAuth ONLY when explicitly called

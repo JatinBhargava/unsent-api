@@ -18,8 +18,9 @@ public class UserService {
     }
 
     public void saveUser(final String email, final String password, final String username,
-                         final String displayName, final String gender, LocalDate dateOfBirth){
+                         final String displayName, final Gender gender, LocalDate dateOfBirth){
         User user = new User(email,password,username,displayName,gender,dateOfBirth);
+        user.setUserId(generateNextUserId());
         userRepository.save(user);
     }
 
@@ -31,10 +32,11 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseGet(() -> {
                     User user = new User();
+                    user.setUserId(generateNextUserId());
                     user.setEmail(email);
                     user.setUsername(generateUsername(email));
                     user.setDisplayName("Anonymous");
-                    user.setGender(Gender.PREFER_NOT_TO_SAY.getCode());
+                    user.setGender(Gender.PREFER_NOT_TO_SAY);
                     user.setDateOfBirth(null);
                     user.setHashedPassword(null); // OAuth users don’t need password
                     return userRepository.save(user);
@@ -43,5 +45,21 @@ public class UserService {
 
     private String generateUsername(String email) {
         return email.split("@")[0] + "_" + System.currentTimeMillis();
+    }
+
+    private String generateNextUserId() {
+        return String.valueOf(
+                userRepository.findLatestUserId()
+                        .map(this::incrementUserId)
+                        .orElse(1L)
+        );
+    }
+
+    private long incrementUserId(String currentUserId) {
+        try {
+            return Long.parseLong(currentUserId) + 1;
+        } catch (NumberFormatException exception) {
+            throw new IllegalStateException("Existing userId is not numeric: " + currentUserId, exception);
+        }
     }
 }

@@ -14,12 +14,6 @@ import java.util.UUID;
 @Setter
 public abstract class BaseEntity {
 
-    @Id
-    @SequenceGenerator(name = "record_seq", sequenceName = "record_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "record_seq")
-    @Column(name = "record_id", nullable = false, updatable = false)
-    private Long record_id;
-
     @Column(name = "local_ts", nullable = false)
     private Instant local_ts;
 
