@@ -1,6 +1,7 @@
-package com.unsent.api.entity;
+    package com.unsent.api.entity;
 
 import com.unsent.entity.BaseEntity;
+import com.unsent.util.Gender;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,10 @@ import java.time.LocalDate;
 @Setter
 public class User extends BaseEntity {
 
+    @Id
+    @Column(name = "user_id", nullable = false, updatable = false)
+    private String userId;
+
     @Column(nullable = false)
     private String email;
 
@@ -28,7 +33,7 @@ public class User extends BaseEntity {
     @Column(name = "display_name")
     private String displayName;
 
-    private String gender;
+    private Gender gender;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
@@ -38,7 +43,7 @@ public class User extends BaseEntity {
             String hashedPassword,
             String username,
             String displayName,
-            String gender,
+            Gender gender,
             LocalDate dateOfBirth
     ) {
         this.email = email;

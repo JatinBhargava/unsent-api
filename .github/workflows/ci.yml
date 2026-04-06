@@ -33,10 +33,17 @@ jobs:
       - name: Build & Test
         run: ./mvnw clean verify
 
+      - name: Check Build Status
+        if: failure()
+        run: |
+          echo "❌ Build or tests failed! PR cannot be merged."
+          exit 1
+
   docker:
     name: Build & Push Docker Images
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout code
