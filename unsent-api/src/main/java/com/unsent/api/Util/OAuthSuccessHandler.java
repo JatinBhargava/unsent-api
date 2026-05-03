@@ -5,25 +5,30 @@ import com.unsent.api.entity.User;
 import com.unsent.api.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.time.Duration;
 
 @Component
 public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 
     private final UserService userService;
     private final JWTUtil jwtUtil;
+    private final String frontendBaseUrl;
 
-    public OAuthSuccessHandler(UserService userService, JWTUtil jwtUtil) {
+    public OAuthSuccessHandler(
+            UserService userService,
+            JWTUtil jwtUtil,
+            @Value("${app.frontend-url:http://localhost:5173}") String frontendBaseUrl
+    ) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.frontendBaseUrl = frontendBaseUrl;
     }
 
     @Override
@@ -43,19 +48,14 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         // 2️⃣ Generate JWT (email or userId ONLY)
         String token = jwtUtil.generateToken(user.getEmail());
 
-        // 3️⃣ HttpOnly cookie (PROD SAFE)
-        ResponseCookie cookie = ResponseCookie.from("SESSION", token)
-                .httpOnly(true)
-                .secure(false)
-                .sameSite("Lax")    // MUST be true on Render (HTTPS)
-                .path("/")
-                .sameSite("None") // Required for cross-domain OAuth
-                .maxAge(Duration.ofDays(7))
-                .build();
+        // 3️⃣ Redirect to frontend with token so SPA can finalize login
+        String redirectUrl = UriComponentsBuilder
+                .fromUriString(frontendBaseUrl)
+                .path("/login")
+                .queryParam("token", token)
+                .build(true)
+                .toUriString();
 
-        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-        // 4️⃣ Redirect to frontend
-        response.sendRedirect("http://localhost:5173/diaries");
+        response.sendRedirect(redirectUrl);
     }
 }

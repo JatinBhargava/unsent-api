@@ -24,9 +24,12 @@ spring:
         registration:
           google:
             client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECERT}
+            client-secret: ${CLIENT_SECRET}
             scope:
               - email
               - profile
 server:
   port: ${PORT}
+
+app:
+  frontend-url: ${FRONTEND_URL}

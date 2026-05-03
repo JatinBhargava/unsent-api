@@ -3,10 +3,12 @@ package com.unsent.api.service;
 import com.unsent.api.entity.User;
 import com.unsent.api.repository.UserRepository;
 import com.unsent.util.Gender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -25,20 +27,39 @@ public class UserService {
     }
 
     public Optional<User> findByEmail(final String email){
-        return userRepository.findByEmail(email);
+        if (email == null) {
+            return Optional.empty();
+        }
+        return userRepository.findByEmailIgnoreCase(email.trim());
+    }
+
+    public Optional<User> findByEmailOrUsername(final String identifier) {
+        if (identifier == null) {
+            return Optional.empty();
+        }
+        final String normalizedIdentifier = identifier.trim();
+        if (normalizedIdentifier.isEmpty()) {
+            return Optional.empty();
+        }
+
+        if (normalizedIdentifier.contains("@")) {
+            return userRepository.findByEmailIgnoreCase(normalizedIdentifier);
+        }
+        return userRepository.findByUsernameIgnoreCase(normalizedIdentifier);
     }
 
     public User findOrCreate(String email) {
-        return userRepository.findByEmail(email)
+        return userRepository.findByEmailIgnoreCase(email)
                 .orElseGet(() -> {
                     User user = new User();
                     user.setUserId(generateNextUserId());
-                    user.setEmail(email);
+                    user.setEmail(email.trim());
                     user.setUsername(generateUsername(email));
                     user.setDisplayName("Anonymous");
                     user.setGender(Gender.PREFER_NOT_TO_SAY);
                     user.setDateOfBirth(null);
-                    user.setHashedPassword(null); // OAuth users don’t need password
+                    // Column is NOT NULL; store a random hash so OAuth-only users persist safely.
+                    user.setHashedPassword(new BCryptPasswordEncoder().encode(UUID.randomUUID().toString()));
                     return userRepository.save(user);
                 });
     }

@@ -1,5 +1,6 @@
 package com.unsent.api.config;
 
+import com.unsent.api.Util.OAuthFailureHandler;
 import com.unsent.api.Util.OAuthSuccessHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class SecurityConfig {
 
     @Autowired
     OAuthSuccessHandler authSuccessHandler;
+    @Autowired
+    OAuthFailureHandler authFailureHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -23,7 +26,6 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
 
-                // ⛔ VERY IMPORTANT
                 .exceptionHandling(ex ->
                         ex.authenticationEntryPoint(
                                 (req, res,
@@ -37,7 +39,9 @@ public class SecurityConfig {
 
                 // OAuth ONLY when explicitly called
                 .oauth2Login(oauth ->
-                        oauth.successHandler(authSuccessHandler));
+                        oauth
+                                .successHandler(authSuccessHandler)
+                                .failureHandler(authFailureHandler));
 
         return http.build();
     }
