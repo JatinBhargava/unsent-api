@@ -14,7 +14,7 @@ public class CorsConfig {
     private final String frontendUrl;
 
     public CorsConfig(
-            @Value("${app.frontend-url:https://unsent-ui-git-feature-ui-starter-jatinbhargavas-projects.vercel.app}")
+            @Value("${app.frontend-url:https://unsent-ui.vercel.app}")
             String frontendUrl
     ) {
         this.frontendUrl = frontendUrl;
