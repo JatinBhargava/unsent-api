@@ -20,18 +20,15 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
     private final UserService userService;
     private final JWTUtil jwtUtil;
     private final String frontendBaseUrl;
-    private final String frontendLoginPath;
 
     public OAuthSuccessHandler(
             UserService userService,
             JWTUtil jwtUtil,
-            @Value("${app.frontend-url:http://localhost:5173}") String frontendBaseUrl,
-            @Value("${app.frontend-login-path:/}") String frontendLoginPath
+            @Value("${app.frontend-url:http://localhost:5173}") String frontendBaseUrl
     ) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.frontendBaseUrl = frontendBaseUrl;
-        this.frontendLoginPath = frontendLoginPath;
     }
 
     @Override
@@ -66,7 +63,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
             // 3️⃣ Redirect
             String redirectUrl = UriComponentsBuilder
                     .fromUriString(frontendBaseUrl)
-                    .path(frontendLoginPath)
+                    .path("/")
                     .queryParam("token", token)
                     .build(true)
                     .toUriString();
@@ -79,7 +76,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
             e.printStackTrace();
             String redirectUrl = UriComponentsBuilder
                     .fromUriString(frontendBaseUrl)
-                    .path(frontendLoginPath)
+                    .path("/")
                     .queryParam("error", "oauth")
                     .build(true)
                     .toUriString();
