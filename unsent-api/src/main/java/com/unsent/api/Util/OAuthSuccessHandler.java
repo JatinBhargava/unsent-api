@@ -77,8 +77,13 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 
         } catch (Exception e) {
             e.printStackTrace();
-
-            response.sendRedirect(frontendBaseUrl + "/oauth-success?error=oauth");
+            String redirectUrl = UriComponentsBuilder
+                    .fromUriString(frontendBaseUrl)
+                    .path(frontendLoginPath)
+                    .queryParam("error", "oauth")
+                    .build(true)
+                    .toUriString();
+            response.sendRedirect(redirectUrl);
         }
     }
 }
