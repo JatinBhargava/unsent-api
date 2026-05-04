@@ -41,24 +41,44 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
             Authentication authentication
     ) throws IOException {
 
-        OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
-        String email = oauthUser.getAttribute("email");
-        String name  = oauthUser.getAttribute("name");
+        try {
+            OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
 
-        // 1️⃣ Find or create user
-        User user = userService.findOrCreate(email);
+            String email = oauthUser.getAttribute("email");
+            String name  = oauthUser.getAttribute("name");
 
-        // 2️⃣ Generate JWT (email or userId ONLY)
-        String token = jwtUtil.generateToken(user.getEmail());
+            System.out.println("OAuth email: " + email);
 
-        // 3️⃣ Redirect to frontend with token so SPA can finalize login
-        String redirectUrl = UriComponentsBuilder
-                .fromUriString(frontendBaseUrl)
-                .path(frontendLoginPath)
-                .queryParam("token", token)
-                .build(true)
-                .toUriString();
+            if (email == null) {
+                throw new RuntimeException("Email not found from OAuth provider");
+            }
 
-        response.sendRedirect(redirectUrl);
+            // 1️⃣ Find or create user
+            User user = userService.findOrCreate(email);
+
+            System.out.println("User found/created: " + user.getEmail());
+
+            // 2️⃣ Generate JWT
+            String token = jwtUtil.generateToken(user.getEmail());
+
+            System.out.println("JWT generated");
+
+            // 3️⃣ Redirect
+            String redirectUrl = UriComponentsBuilder
+                    .fromUriString(frontendBaseUrl)
+                    .path(frontendLoginPath)
+                    .queryParam("token", token)
+                    .build(true)
+                    .toUriString();
+
+            System.out.println("Redirecting to: " + redirectUrl);
+
+            response.sendRedirect(redirectUrl);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            response.sendRedirect(frontendBaseUrl + "/oauth-success?error=oauth");
+        }
     }
 }
