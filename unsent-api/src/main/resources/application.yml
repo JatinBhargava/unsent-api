@@ -42,7 +42,7 @@ management:
 
 app:
   frontend-url: ${FRONTEND_URL:https://unsent-ui.vercel.app}
-  frontend-login-path: ${FRONTEND_LOGIN_PATH:/oauth-success}
+  frontend-login-path: ${FRONTEND_LOGIN_PATH:/login}
   jwt:
     secret: ${JWT_SECRET}
     expiration-ms: 86400000
