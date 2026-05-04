@@ -5,6 +5,8 @@ import com.unsent.api.entity.User;
 import com.unsent.api.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -17,6 +19,7 @@ import java.io.IOException;
 @Component
 public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(OAuthSuccessHandler.class);
     private final UserService userService;
     private final JWTUtil jwtUtil;
     private final String frontendBaseUrl;
@@ -42,25 +45,19 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
             OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
 
             String email = oauthUser.getAttribute("email");
-            String name  = oauthUser.getAttribute("name");
-
-            System.out.println("OAuth email: " + email);
+            String name = oauthUser.getAttribute("name");
+            log.info("OAuth success callback received: email={}, name={}", email, name);
 
             if (email == null) {
                 throw new RuntimeException("Email not found from OAuth provider");
             }
 
-            // 1️⃣ Find or create user
             User user = userService.findOrCreate(email);
+            log.info("OAuth user resolved: {}", user.getEmail());
 
-            System.out.println("User found/created: " + user.getEmail());
-
-            // 2️⃣ Generate JWT
             String token = jwtUtil.generateToken(user.getEmail());
+            log.info("JWT generated for OAuth user");
 
-            System.out.println("JWT generated");
-
-            // 3️⃣ Redirect
             String redirectUrl = UriComponentsBuilder
                     .fromUriString(frontendBaseUrl)
                     .path("/")
@@ -68,16 +65,22 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
                     .build(true)
                     .toUriString();
 
-            System.out.println("Redirecting to: " + redirectUrl);
+            log.info("OAuth redirecting to frontend root");
 
             response.sendRedirect(redirectUrl);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(
+                    "OAuth success handler failed: uri={}, error={}",
+                    request.getRequestURI(),
+                    e.getMessage(),
+                    e
+            );
             String redirectUrl = UriComponentsBuilder
                     .fromUriString(frontendBaseUrl)
                     .path("/")
                     .queryParam("error", "oauth")
+                    .queryParam("reason", "success_handler_exception")
                     .build(true)
                     .toUriString();
             response.sendRedirect(redirectUrl);
