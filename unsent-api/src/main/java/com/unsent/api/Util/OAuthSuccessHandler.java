@@ -20,15 +20,18 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
     private final UserService userService;
     private final JWTUtil jwtUtil;
     private final String frontendBaseUrl;
+    private final String frontendLoginPath;
 
     public OAuthSuccessHandler(
             UserService userService,
             JWTUtil jwtUtil,
-            @Value("${app.frontend-url:http://localhost:5173}") String frontendBaseUrl
+            @Value("${app.frontend-url:http://localhost:5173}") String frontendBaseUrl,
+            @Value("${app.frontend-login-path:/}") String frontendLoginPath
     ) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.frontendBaseUrl = frontendBaseUrl;
+        this.frontendLoginPath = frontendLoginPath;
     }
 
     @Override
@@ -51,7 +54,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         // 3️⃣ Redirect to frontend with token so SPA can finalize login
         String redirectUrl = UriComponentsBuilder
                 .fromUriString(frontendBaseUrl)
-                .path("/login")
+                .path(frontendLoginPath)
                 .queryParam("token", token)
                 .build(true)
                 .toUriString();

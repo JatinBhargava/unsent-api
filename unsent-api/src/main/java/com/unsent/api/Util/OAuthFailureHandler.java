@@ -14,11 +14,14 @@ import java.io.IOException;
 public class OAuthFailureHandler implements AuthenticationFailureHandler {
 
     private final String frontendBaseUrl;
+    private final String frontendLoginPath;
 
     public OAuthFailureHandler(
-            @Value("${app.frontend-url:http://localhost:5173}") String frontendBaseUrl
+            @Value("${app.frontend-url:http://localhost:5173}") String frontendBaseUrl,
+            @Value("${app.frontend-login-path:/}") String frontendLoginPath
     ) {
         this.frontendBaseUrl = frontendBaseUrl;
+        this.frontendLoginPath = frontendLoginPath;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class OAuthFailureHandler implements AuthenticationFailureHandler {
     ) throws IOException {
         String redirectUrl = UriComponentsBuilder
                 .fromUriString(frontendBaseUrl)
-                .path("/login")
+                .path(frontendLoginPath)
                 .queryParam("error", "oauth")
                 .build(true)
                 .toUriString();
