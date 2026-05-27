@@ -19,6 +19,10 @@ jobs:
     name: Build & Test (All Modules)
     runs-on: ubuntu-latest
 
+    env:
+      APP_FRONTEND_URL: ${{ secrets.APP_FRONTEND_URL }}
+      FRONTEND_LOGIN_PATH: /
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -44,6 +48,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master'
+
+    env:
+      APP_FRONTEND_URL: ${{ secrets.APP_FRONTEND_URL }}
+      FRONTEND_LOGIN_PATH: /
 
     steps:
       - name: Checkout code
