@@ -34,3 +34,6 @@ server:
 app:
   frontend-url: ${APP_FRONTEND_URL}
   frontend-login-path: ${FRONTEND_LOGIN_PATH:/}
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: 86400000
