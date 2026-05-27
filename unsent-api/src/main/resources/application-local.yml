@@ -3,3 +3,21 @@ spring:
     url: jdbc:postgresql://localhost:5433/unsent_db
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+
+app:
+  frontend-url: ${APP_FRONTEND_URL}
+  frontend-login-path: ${FRONTEND_LOGIN_PATH:/}
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: 86400000

@@ -12,6 +12,20 @@ spring:
   flyway:
     enabled: false
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+
 app:
+  frontend-url: ${APP_FRONTEND_URL:https}
+  frontend-login-path: ${FRONTEND_LOGIN_PATH:/}
   jwt:
     secret: test-test-test-test-test-test-test-test
+    expiration-ms: 86400000

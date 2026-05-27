@@ -17,9 +17,14 @@ import java.time.LocalDate;
 @Setter
 public class User extends BaseEntity {
 
-    @Id
-    @Column(name = "user_id", nullable = false, updatable = false)
+    @Column(name = "user_id",nullable = false)
     private String userId;
+
+    @Id
+    @SequenceGenerator(name = "record_seq", sequenceName = "record_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "record_seq")
+    @Column(name = "record_id", nullable = false, updatable = false)
+    private Long recordId;
 
     @Column(nullable = false)
     private String email;

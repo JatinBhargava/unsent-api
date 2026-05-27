@@ -13,6 +13,9 @@ public class DiaryEntryRequestDTO {
     @JsonProperty("userId")
     private final String userId;
 
+    @JsonProperty("title")
+    private final String title;
+
     @JsonProperty("content")
     private final String content;
 

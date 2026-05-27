@@ -17,30 +17,26 @@ CREATE TABLE IF NOT EXISTS users (
     local_ts TIMESTAMP NOT NULL,
     host_ts TIMESTAMP NOT NULL,
     uuid UUID NOT NULL,
-    CONSTRAINT users_pkey PRIMARY KEY (user_id),
-    CONSTRAINT ux_users_username UNIQUE (username)
+    CONSTRAINT users_pkey PRIMARY KEY (record_id)
     );
 
-CREATE UNIQUE INDEX idx_users_01 ON users (user_id, email, username, status);
+CREATE UNIQUE INDEX idx_users_01 ON users (record_id,username);
 
 CREATE TABLE IF NOT EXISTS diary_entries (
-
     record_id BIGINT NOT NULL DEFAULT nextval('record_seq'),
     uuid UUID NOT NULL,
-    user_id VARCHAR(100) NOT NULL,
+    user_id BIGINT NOT NULL,
+    title TEXT NOT NULL,
     content TEXT NOT NULL,
     visibility VARCHAR(30),
     status VARCHAR(30) NOT NULL,
     crud_value VARCHAR(20) NOT NULL,
     local_ts TIMESTAMP NOT NULL,
     host_ts TIMESTAMP NOT NULL,
-    CONSTRAINT diary_entries_pkey PRIMARY KEY (record_id),
+    CONSTRAINT diary_entries_pkey
+    PRIMARY KEY (record_id),
     CONSTRAINT fk_diary_user
     FOREIGN KEY (user_id)
-    REFERENCES users (user_id)
+    REFERENCES users(record_id)
     ON DELETE CASCADE
     );
-
--- Indexes
-CREATE INDEX idx_diary_01
-    ON diary_entries (user_id);

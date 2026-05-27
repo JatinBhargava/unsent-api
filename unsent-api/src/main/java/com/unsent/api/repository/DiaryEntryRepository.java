@@ -12,4 +12,6 @@ public interface DiaryEntryRepository extends JpaRepository<DiaryEntry, Long> {
     List<DiaryEntry> findByUserUserIdAndContentContainingIgnoreCase(String userId, String keyword);
 
     long countByUserUserId(String userId);
+
+    List<DiaryEntry> findAllByOrderByHostTsDesc();
 }

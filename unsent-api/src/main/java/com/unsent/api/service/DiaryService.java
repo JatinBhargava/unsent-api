@@ -28,6 +28,7 @@ public class DiaryService {
 
         DiaryEntry diaryEntry = new DiaryEntry();
         diaryEntry.setUser(user);
+        diaryEntry.setTitle(request.getTitle());
         diaryEntry.setContent(request.getContent());
         diaryEntry.setVisibility(request.getVisibility());
         diaryEntry.setStatus(request.getStatus());
@@ -36,7 +37,7 @@ public class DiaryService {
     }
 
     public List<DiaryEntryResponseDTO> getAllEntries() {
-        return diaryEntryRepository.findAll().stream()
+        return diaryEntryRepository.findAllByOrderByHostTsDesc().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
@@ -82,7 +83,7 @@ public class DiaryService {
     }
 
     private User findUserByUserId(String userId) {
-        return userRepository.findByUserId(userId)
+        return userRepository.findTopByUserIdOrderByRecordIdDesc(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
     }
 
