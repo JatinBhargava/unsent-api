@@ -13,7 +13,7 @@ spring:
     enabled: false
 
 app:
-  frontend-url: ${APP_FRONTEND_URL}
+  frontend-url: ${APP_FRONTEND_URL:https://unsent-ui.vercel.app}
   frontend-login-path: ${FRONTEND_LOGIN_PATH:/}
   jwt:
     secret: test-test-test-test-test-test-test-test
