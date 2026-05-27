@@ -19,10 +19,6 @@ jobs:
     name: Build & Test (All Modules)
     runs-on: ubuntu-latest
 
-    env:
-      APP_FRONTEND_URL: ${{ secrets.APP_FRONTEND_URL }}
-      FRONTEND_LOGIN_PATH: /
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
