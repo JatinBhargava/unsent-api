@@ -17,3 +17,4 @@ app:
   frontend-login-path: ${FRONTEND_LOGIN_PATH:/}
   jwt:
     secret: test-test-test-test-test-test-test-test
+    expiration-ms: 86400000

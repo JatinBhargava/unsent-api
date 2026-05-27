@@ -33,3 +33,5 @@ management:
 app:
   frontend-url: ${APP_FRONTEND_URL:https://unsent-ui.vercel.app}
   frontend-login-path: ${FRONTEND_LOGIN_PATH:/}
+  jwt:
+    expiration-ms: 86400000
