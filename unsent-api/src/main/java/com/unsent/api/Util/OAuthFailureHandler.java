@@ -19,7 +19,7 @@ public class OAuthFailureHandler implements AuthenticationFailureHandler {
     private final String frontendBaseUrl;
 
     public OAuthFailureHandler(
-            @Value("${app.frontend-url:http://localhost:5173}") String frontendBaseUrl
+            @Value("${app.frontend-url}") String frontendBaseUrl
     ) {
         this.frontendBaseUrl = frontendBaseUrl;
     }

@@ -38,7 +38,7 @@ public class DiaryController {
     }
 
     @GetMapping("/{recordId}")
-    public ResponseEntity<DiaryEntryResponseDTO> getEntryById(@PathVariable Long recordId) {
+    public ResponseEntity<DiaryEntryResponseDTO> getEntryById(@PathVariable("recordId") Long recordId) {
         return ResponseEntity.ok(diaryService.getEntryById(recordId));
     }
 

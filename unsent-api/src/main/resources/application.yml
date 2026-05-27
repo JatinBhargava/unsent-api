@@ -19,17 +19,7 @@ spring:
 
   flyway:
     enabled: true
-
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
-            scope:
-              - email
-              - profile
+    locations: classpath:db/migration
 
 server:
   port: 8080
@@ -39,10 +29,3 @@ management:
     web:
       exposure:
         include: health,info
-
-app:
-  frontend-url: ${FRONTEND_URL:https://unsent-ui.vercel.app}
-  frontend-login-path: ${FRONTEND_LOGIN_PATH:/}
-  jwt:
-    secret: ${JWT_SECRET}
-    expiration-ms: 86400000

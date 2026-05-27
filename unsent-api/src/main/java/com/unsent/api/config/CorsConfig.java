@@ -11,11 +11,11 @@ import java.util.List;
 
 @Configuration
 public class CorsConfig {
+
     private final String frontendUrl;
 
     public CorsConfig(
-            @Value("${app.frontend-url:https://unsent-ui.vercel.app}")
-            String frontendUrl
+            @Value("${app.frontend-url}") String frontendUrl
     ) {
         this.frontendUrl = frontendUrl;
     }

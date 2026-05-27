@@ -27,7 +27,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
     public OAuthSuccessHandler(
             UserService userService,
             JWTUtil jwtUtil,
-            @Value("${app.frontend-url:http://localhost:5173}") String frontendBaseUrl
+            @Value("${app.frontend-url}") String frontendBaseUrl
     ) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;

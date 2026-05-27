@@ -8,11 +8,13 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByEmail(final String email);
-    Optional<User> findByEmailIgnoreCase(final String email);
+    Optional<User> findTopByEmailIgnoreCaseOrderByRecordIdDesc(final String email);
     Optional<User> findByUsernameIgnoreCase(final String username);
 
-    Optional<User> findByUserId(String userId);
+    Optional<User> findTopByUserIdOrderByRecordIdDesc(String userId);
 
     @Query(value = "SELECT user_id FROM users ORDER BY record_id DESC LIMIT 1", nativeQuery = true)
     Optional<String> findLatestUserId();
+
+
 }

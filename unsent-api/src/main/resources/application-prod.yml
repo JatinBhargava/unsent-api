@@ -32,5 +32,5 @@ server:
   port: ${PORT}
 
 app:
-  frontend-url: ${FRONTEND_URL}
+  frontend-url: ${APP_FRONTEND_URL}
   frontend-login-path: ${FRONTEND_LOGIN_PATH:/}
