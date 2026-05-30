@@ -62,14 +62,14 @@ public class DiaryController {
 
     @PutMapping("/{recordId}")
     public ResponseEntity<DiaryEntryResponseDTO> updateEntry(
-            @PathVariable Long recordId,
+            @PathVariable("recordId") Long recordId,
             @RequestBody DiaryEntryRequestDTO request
     ) {
-        return ResponseEntity.ok(diaryService.updateEntry(recordId, request.getContent(), request.getVisibility()));
+        return ResponseEntity.ok(diaryService.updateEntry(recordId,request));
     }
 
     @DeleteMapping("/{recordId}")
-    public ResponseEntity<Void> deleteEntry(@PathVariable Long recordId) {
+    public ResponseEntity<Void> deleteEntry(@PathVariable("recordId") Long recordId) {
         diaryService.deleteEntry(recordId);
         return ResponseEntity.noContent().build();
     }

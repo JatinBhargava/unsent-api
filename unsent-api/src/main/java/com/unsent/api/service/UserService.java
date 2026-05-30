@@ -5,7 +5,6 @@ import com.unsent.api.entity.User;
 import com.unsent.api.repository.UserRepository;
 import com.unsent.util.CrudOperation;
 import com.unsent.util.Gender;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -78,16 +77,10 @@ public class UserService {
 
     public void updateProfile(String userId, UserDTO request) {
         Optional<User> user = userRepository.findTopByUserIdOrderByRecordIdDesc(userId);
-        User newUser = new User();
-        BeanUtils.copyProperties(user.get(),newUser,
-                "recordId", "crud_value", "uuid");
-        newUser.setRecordId(null);
-        newUser.setDisplayName(request.getDisplayName());
-        newUser.setGender(request.getGender());
-        newUser.setDateOfBirth(request.getDateOfBirth());
-        newUser.setUuid(UUID.randomUUID());
-        newUser.setCrud_value(CrudOperation.UPDATE.getCode());
-        userRepository.save(newUser);
+        user.get().setDisplayName(request.getDisplayName());
+        user.get().setGender(request.getGender());
+        user.get().setDateOfBirth(request.getDateOfBirth());
+        userRepository.save(user.get());
     }
 
     private String generateUsername(String email) {

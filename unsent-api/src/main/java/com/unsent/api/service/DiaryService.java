@@ -5,7 +5,6 @@ import com.unsent.api.dto.DiaryEntryResponseDTO;
 import com.unsent.api.entity.DiaryEntry;
 import com.unsent.api.entity.User;
 import com.unsent.api.repository.DiaryEntryRepository;
-import com.unsent.api.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +15,11 @@ import java.util.stream.Collectors;
 public class DiaryService {
 
     private final DiaryEntryRepository diaryEntryRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public DiaryService(DiaryEntryRepository diaryEntryRepository, UserRepository userRepository) {
+    public DiaryService(DiaryEntryRepository diaryEntryRepository, UserService userService) {
         this.diaryEntryRepository = diaryEntryRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public DiaryEntryResponseDTO createEntry(DiaryEntryRequestDTO request) {
@@ -37,7 +36,7 @@ public class DiaryService {
     }
 
     public List<DiaryEntryResponseDTO> getAllEntries() {
-        return diaryEntryRepository.findAllByOrderByHostTsDesc().stream()
+        return diaryEntryRepository.findLatestEntryOfEachUser().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
@@ -53,10 +52,13 @@ public class DiaryService {
                 .collect(Collectors.toList());
     }
 
-    public DiaryEntryResponseDTO updateEntry(Long recordId, String content, String visibility) {
+    public DiaryEntryResponseDTO updateEntry(Long recordId, DiaryEntryRequestDTO request) {
         DiaryEntry diaryEntry = findEntryById(recordId);
-        diaryEntry.setContent(content);
-        diaryEntry.setVisibility(visibility);
+        User user = findUserByUserId(diaryEntry.getUser().getUserId());
+        diaryEntry.setTitle(request.getTitle());
+        diaryEntry.setUser(user);
+        diaryEntry.setContent(request.getContent());
+        diaryEntry.setVisibility(request.getVisibility());
         return toResponse(diaryEntryRepository.save(diaryEntry));
     }
 
@@ -83,7 +85,7 @@ public class DiaryService {
     }
 
     private User findUserByUserId(String userId) {
-        return userRepository.findTopByUserIdOrderByRecordIdDesc(userId)
+        return userService.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
     }
 
