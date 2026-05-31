@@ -47,7 +47,7 @@ This repository contains the **core platform infrastructure**, including:
 - Moderation and safety foundations
 - Scalable backend architecture
 - AI integration points (implementation abstracted)
-
+- [Frontend Project](https://github.com/JatinBhargava/unsent-ui/tree/develop)
 Some advanced product capabilities are **intentionally abstracted** or gated behind interfaces.
 
 ---
@@ -67,7 +67,7 @@ Contributors don’t need access to these to make meaningful impact.
 
 ## 🛠️ Tech Stack (Current)
 
-- **Frontend:** [React.js](https://github.com/JatinBhargava/unsent-ui/tree/develop)
+- **Frontend:** React.js
 - **Backend:**  Spring Boot
 - **Database:** PostgreSQL
 - **Cache / Queue:** Redis
