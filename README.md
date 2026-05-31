@@ -47,8 +47,8 @@ This repository contains the **core platform infrastructure**, including:
 - Moderation and safety foundations
 - Scalable backend architecture
 - AI integration points (implementation abstracted)
-- [Frontend Project](https://github.com/JatinBhargava/unsent-ui/tree/develop)
 Some advanced product capabilities are **intentionally abstracted** or gated behind interfaces.
+- [Frontend Project](https://github.com/JatinBhargava/unsent-ui/tree/develop)
 
 ---
 
