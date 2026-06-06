@@ -29,7 +29,7 @@ public class DiaryEntry extends BaseEntity {
     @Column(nullable = false, columnDefinition = "text")
     private String content;
 
-    @Column
+    @Column(name = "status", nullable = false)
     private String status;
 
     @Column

@@ -25,7 +25,7 @@ public class AuthService {
     }
 
     public String registerUser(final RegisterRequestDTO request){
-         if(userService.findByEmail(request.getEmail()).isPresent()){
+         if(Optional.ofNullable(userService.findByEmail(request.getEmail())).isPresent()){
              throw new RuntimeException("User Email ID already present.");
          }
           String hashedPassword = passwordEncoder.encode(request.getPassword());

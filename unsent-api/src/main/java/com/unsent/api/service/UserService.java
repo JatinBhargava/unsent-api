@@ -5,6 +5,7 @@ import com.unsent.api.entity.User;
 import com.unsent.api.repository.UserRepository;
 import com.unsent.util.CrudOperation;
 import com.unsent.util.Gender;
+import com.unsent.util.RecordStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +27,19 @@ public class UserService {
         User user = new User(email, password, username, displayName, gender, dateOfBirth);
         user.setUserId(generateNextUserId());
         user.setCrud_value(CrudOperation.CREATE.getCode());
+        user.setStatus(RecordStatus.ACTIVE.getCode());
         userRepository.save(user);
     }
 
-    public Optional<User> findByEmail(final String email) {
-        if (email == null) {
-            return Optional.empty();
-        }
-        return userRepository.findTopByEmailIgnoreCaseOrderByRecordIdDesc(email.trim());
+    public UserDTO findByEmail(final String email) {
+      Optional<User> user = userRepository.findTopByEmailIgnoreCaseOrderByRecordIdDesc(email.trim());
+        return UserDTO.builder()
+                .userId(user.get().getUserId())
+                .username(user.get().getUsername())
+                .displayName(user.get().getDisplayName())
+                .gender(user.get().getGender())
+                .dateOfBirth(user.get().getDateOfBirth())
+                .build();
     }
 
     public Optional<User> findByEmailOrUsername(final String identifier) {
@@ -62,17 +68,27 @@ public class UserService {
                     user.setGender(Gender.PREFER_NOT_TO_SAY);
                     user.setDateOfBirth(null);
                     user.setCrud_value(CrudOperation.CREATE.getCode());
+                    user.setStatus(RecordStatus.ACTIVE.getCode());
                     // Column is NOT NULL; store a random hash so OAuth-only users persist safely.
                     user.setHashedPassword(new BCryptPasswordEncoder().encode(UUID.randomUUID().toString()));
                     return userRepository.save(user);
                 });
     }
 
-    public Optional<User> findByUserId(final String userId) {
-        if (userId == null) {
-            return Optional.empty();
-        }
-        return userRepository.findTopByUserIdOrderByRecordIdDesc(userId);
+    public UserDTO findByUserId(final String userId) {
+        Optional<User> user = userRepository.findTopByUserIdOrderByRecordIdDesc(userId);
+        return UserDTO.builder()
+                .userId(user.get().getUserId())
+                .username(user.get().getUsername())
+                .displayName(user.get().getDisplayName())
+                .gender(user.get().getGender())
+                .dateOfBirth(user.get().getDateOfBirth())
+                .build();
+    }
+
+    public Optional<User> findByUserIdEntity(final String userId) {
+        Optional<User> user = userRepository.findTopByUserIdOrderByRecordIdDesc(userId);
+        return user;
     }
 
     public void updateProfile(String userId, UserDTO request) {

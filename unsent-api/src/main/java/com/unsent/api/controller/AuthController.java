@@ -42,14 +42,14 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    public Optional<User> getUserByEmail(@RequestParam("email") String email){
-        final Optional<User> user = userService.findByEmail(email);
+    public UserDTO getUserByEmail(@RequestParam("email") String email){
+        final UserDTO user = userService.findByEmail(email);
         return user;
     }
 
     @GetMapping("/user/{userId}")
-    public Optional<User> getUserByUserId(@PathVariable("userId") String userId){
-        final Optional<User> user = userService.findByUserId(userId);
+    public UserDTO getUserByUserId(@PathVariable("userId") String userId){
+        final UserDTO user = userService.findByUserId(userId);
         return user;
     }
 
