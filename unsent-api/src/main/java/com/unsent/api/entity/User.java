@@ -43,6 +43,9 @@ public class User extends BaseEntity {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
     public User(
             String email,
             String hashedPassword,

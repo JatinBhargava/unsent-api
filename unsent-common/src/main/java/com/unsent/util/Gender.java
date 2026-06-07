@@ -17,10 +17,6 @@ public enum Gender {
         this.code = code;
     }
 
-    public String toValue() {
-        return code;
-    }
-
     public static Gender fromValue(String value) {
         if (value == null) {
             return null;

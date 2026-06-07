@@ -23,9 +23,6 @@ public abstract class BaseEntity {
     @Column(name = "crud_value", nullable = false)
     private String crud_value;
 
-    @Column(name = "status", nullable = false)
-    private String status;
-
     @Column(name = "uuid", nullable = false, updatable = false, unique = true)
     private UUID uuid;
 
@@ -37,10 +34,6 @@ public abstract class BaseEntity {
         if (this.crud_value == null) {
             this.crud_value =
                     CrudOperation.CREATE.getCode();
-        }
-        if (this.status == null) {
-            this.status =
-                    RecordStatus.ACTIVE.getCode();
         }
         if (this.uuid == null) {
             this.uuid = UUID.randomUUID();
@@ -56,11 +49,6 @@ public abstract class BaseEntity {
         if (this.crud_value == null) {
             this.crud_value =
                     CrudOperation.UPDATE.getCode();
-        }
-
-        if (this.status == null) {
-            this.status =
-                    RecordStatus.ACTIVE.getCode();
         }
     }
 
