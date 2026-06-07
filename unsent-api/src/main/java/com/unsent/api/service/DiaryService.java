@@ -5,8 +5,11 @@ import com.unsent.api.dto.DiaryEntryResponseDTO;
 import com.unsent.api.dto.UserDTO;
 import com.unsent.api.entity.DiaryEntry;
 import com.unsent.api.entity.User;
+import com.unsent.api.helper.SequenceService;
 import com.unsent.api.repository.DiaryEntryRepository;
+import com.unsent.util.CrudOperation;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -15,20 +18,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DiaryService {
 
     private final DiaryEntryRepository diaryEntryRepository;
     private final UserService userService;
-
-    public DiaryService(DiaryEntryRepository diaryEntryRepository, UserService userService) {
-        this.diaryEntryRepository = diaryEntryRepository;
-        this.userService = userService;
-    }
+    private final SequenceService sequenceService;
 
     public DiaryEntryResponseDTO createEntry(DiaryEntryRequestDTO request) {
         User user = findUserEntityByUserId(request.getUserId());
         DiaryEntry diaryEntry = new DiaryEntry();
         diaryEntry.setUser(user);
+        diaryEntry.setStoryId(sequenceService.generateStoryId());
         diaryEntry.setTitle(request.getTitle());
         diaryEntry.setContent(request.getContent());
         diaryEntry.setVisibility(request.getVisibility());
@@ -38,7 +39,7 @@ public class DiaryService {
     }
 
     public List<DiaryEntryResponseDTO> getAllEntries() {
-        return diaryEntryRepository.findLatestEntryOfEachUser().stream()
+        return diaryEntryRepository.findLatestEntryOfEachStory().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
@@ -57,13 +58,15 @@ public class DiaryService {
     public DiaryEntryResponseDTO updateEntry(Long recordId, DiaryEntryRequestDTO request) {
         DiaryEntry diaryEntry = findEntryById(recordId);
         User user = findUserEntityByUserId(diaryEntry.getUser().getUserId());
-        User newUser = new User();
-        BeanUtils.copyProperties(user,newUser);
-        diaryEntry.setTitle(request.getTitle());
-        diaryEntry.setUser(newUser);
-        diaryEntry.setContent(request.getContent());
-        diaryEntry.setVisibility(request.getVisibility());
-        return toResponse(diaryEntryRepository.save(diaryEntry));
+        DiaryEntry newEntry = new DiaryEntry();
+        BeanUtils.copyProperties(diaryEntry,newEntry,"recordId");
+        newEntry.setTitle(request.getTitle());
+        newEntry.setUser(user);
+        diaryEntry.setStoryId(sequenceService.generateStoryId());
+        newEntry.setContent(request.getContent());
+        newEntry.setVisibility(request.getVisibility());
+        newEntry.setCrud_value(CrudOperation.UPDATE.getCode());
+        return toResponse(diaryEntryRepository.save(newEntry));
     }
 
     public void deleteEntry(Long recordId) {

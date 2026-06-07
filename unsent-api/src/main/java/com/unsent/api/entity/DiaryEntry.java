@@ -19,6 +19,9 @@ public class DiaryEntry extends BaseEntity {
     @Column(name = "record_id", nullable = false, updatable = false)
     private Long recordId;
 
+    @Column(name = "story_id", nullable = false)
+    private String storyId;
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "record_id", nullable = false)
     private User user;

@@ -7,6 +7,7 @@ import lombok.Getter;
 public class DiaryEntryResponseDTO {
 
     private final Long recordId;
+    private final String storyId;
     private final String userId;
     private final String title;
     private final String content;
@@ -15,6 +16,7 @@ public class DiaryEntryResponseDTO {
 
     public DiaryEntryResponseDTO(DiaryEntry diaryEntry) {
         this.recordId = diaryEntry.getRecordId();
+        this.storyId = diaryEntry.getStoryId();
         this.userId = diaryEntry.getUser().getUserId();
         this.title = diaryEntry.getTitle();
         this.content = diaryEntry.getContent();
