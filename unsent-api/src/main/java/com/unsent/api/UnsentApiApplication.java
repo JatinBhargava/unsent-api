@@ -3,7 +3,7 @@ package com.unsent.api;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.unsent")
 public class UnsentApiApplication {
 
 	public static void main(String[] args) {

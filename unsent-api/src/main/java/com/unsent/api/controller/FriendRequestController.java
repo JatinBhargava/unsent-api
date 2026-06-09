@@ -16,29 +16,34 @@ public class FriendRequestController {
 
     private final FriendRequestService friendRequestService;
 
-    @PostMapping("/sendFriendRequest")
+    @PostMapping("/send/friend/request")
     public void sendFriendRequest(@RequestBody FriendRequestDTO request){
         friendRequestService.sendFriendRequest(request);
     }
 
-    @PostMapping("/acceptFriendRequest")
+    @PostMapping("/accept/friend/request")
     public void acceptFriendRequest(@RequestBody FriendRequestDTO request){
         friendRequestService.acceptFriendRequest(request);
     }
 
-    @PostMapping("/rejectFriendRequest")
+    @PostMapping("/reject/friend/request")
     public void rejectFriendRequest(@RequestBody FriendRequestDTO request){
         friendRequestService.rejectFriendRequest(request);
     }
 
     @GetMapping("/request/recived")
-    public ApiResponse<List<FriendRequestDTO>> getRecivedRequest(@RequestParam("senderId") String senderId){
-        List<FriendRequestDTO> recivedRequest = friendRequestService.getRecivedRequest(senderId);
+    public ApiResponse<List<FriendRequestDTO>> getRecivedRequest(@RequestParam("receiverId") String receiverId){
+        List<FriendRequestDTO> recivedRequest = friendRequestService.getRecivedRequest(receiverId);
         return ApiResponse.<List<FriendRequestDTO>>builder()
                 .message("Friend requests: ")
                 .count((long) recivedRequest.size())
                 .data(recivedRequest)
                 .build();
+    }
+
+    @GetMapping(("/request/status"))
+    public FriendRequestDTO getStatusBetweenSenderAndReceiver(@RequestBody FriendRequestDTO request){
+        return friendRequestService.getStatusBetweenSenderandReceiver(request);
     }
 
 }
