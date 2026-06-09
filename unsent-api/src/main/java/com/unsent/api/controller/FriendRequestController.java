@@ -42,8 +42,11 @@ public class FriendRequestController {
     }
 
     @GetMapping(("/request/status"))
-    public FriendRequestDTO getStatusBetweenSenderAndReceiver(@RequestBody FriendRequestDTO request){
-        return friendRequestService.getStatusBetweenSenderandReceiver(request);
+    public FriendRequestDTO getStatusBetweenSenderAndReceiver(
+            @RequestParam("senderId") String senderId,
+            @RequestParam("receiverId") String receiverId
+    ){
+        return friendRequestService.getStatusBetweenSenderandReceiver(senderId,receiverId);
     }
 
 }

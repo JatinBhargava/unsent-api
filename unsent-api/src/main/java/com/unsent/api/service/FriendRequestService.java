@@ -27,6 +27,7 @@ public class FriendRequestService {
 
     private final FriendRequestRepository friendRequestRepository;
     private final UserService userService;
+    private final FriendService friendService;
 
     public void sendFriendRequest(FriendRequestDTO request){
         validateSenderandReciver(request);
@@ -45,6 +46,8 @@ public class FriendRequestService {
         friendRequest.setReceiverId(request.getReceiver_id());
         friendRequest.setRequestStatus(FriendRequestStatus.ACCEPTED.getCode());
         friendRequestRepository.save(friendRequest);
+        friendService.saveUserToFriendRelation(request);
+        friendService.saveFriendToUserRelation(request);
     }
 
     public void rejectFriendRequest(FriendRequestDTO request){
@@ -64,13 +67,13 @@ public class FriendRequestService {
         return  senderPendingRequest.stream().map(this::mapSenderandReciverDetails).toList();
     }
 
-    public FriendRequestDTO getStatusBetweenSenderandReceiver(FriendRequestDTO request){
+    public FriendRequestDTO getStatusBetweenSenderandReceiver(String senderId, String reciverId){
 
         String status = "";
         Optional<FriendRequest> latestRecordOfSenderAndReceiver =
                 friendRequestRepository
-                        .findTopBySenderIdAndReceiverIdOrderByHostTsDesc(request.getSender_id(),
-                                request.getReceiver_id());
+                        .findTopBySenderIdAndReceiverIdOrderByHostTsDesc(senderId,
+                                reciverId);
 
         if(latestRecordOfSenderAndReceiver.isPresent()
         && latestRecordOfSenderAndReceiver.get().getRequestStatus()
