@@ -6,10 +6,17 @@ on:
       - feature/**
       - develop
       - master
+      - release/**
   pull_request:
     branches:
       - develop
       - master
+  workflow_dispatch:
+    inputs:
+      create_tag:
+        description: Create a git tag from POM version
+        type: boolean
+        default: false
 
 env:
   DOCKER_REGISTRY: jatindocker623
@@ -43,7 +50,7 @@ jobs:
     name: Build & Push Docker Images
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/release/')
 
     env:
       APP_FRONTEND_URL: ${{ secrets.APP_FRONTEND_URL }}
@@ -94,7 +101,7 @@ jobs:
     name: Create Git Tag from POM Version
     needs: docker
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/feature/')
+    if: startsWith(github.ref, 'refs/heads/release/') || inputs.create_tag == true
     permissions:
       contents: write
 
