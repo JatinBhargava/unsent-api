@@ -92,7 +92,7 @@ jobs:
 
   tag:
     name: Create Git Tag from POM Version
-    needs: build
+    needs: docker
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/feature/')
     permissions:
