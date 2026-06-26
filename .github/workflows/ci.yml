@@ -101,7 +101,7 @@ jobs:
     name: Create Git Tag from POM Version
     needs: docker
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/heads/release/') || inputs.create_tag == true
+    if: inputs.create_tag == true
     permissions:
       contents: write
 
