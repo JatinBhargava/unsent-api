@@ -14,3 +14,5 @@ unsent-api/docker/
 .idea/
 .vscode/
 .DS_Store
+
+INTERVIEW_NOTES.md

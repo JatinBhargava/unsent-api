@@ -15,4 +15,15 @@ public class SequenceService {
         return "ST" + nextVal;
     }
 
+    public Long nextStorySequenceValue(){
+        return  sequenceRepository.getNextStoryId();
+    }
+
+    public String nextMessageSequenceValue(){
+        return  sequenceRepository.getNextMessageId();
+    }
+
+    public String nextConversationSequenceValue(){
+        return sequenceRepository.getNextConversationId();
+    }
 }
