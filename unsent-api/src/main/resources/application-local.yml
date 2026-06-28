@@ -15,6 +15,9 @@ spring:
               - email
               - profile
 
+  main:
+    allow-circular-references: true
+
 app:
   frontend-url: ${APP_FRONTEND_URL}
   frontend-login-path: ${FRONTEND_LOGIN_PATH:/}

@@ -32,6 +32,9 @@ spring:
               - email
               - profile
 
+  main:
+    allow-circular-references: true
+
 server:
   port: 8080
 

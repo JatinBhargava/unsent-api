@@ -19,4 +19,6 @@ public interface DiaryEntryRepository extends JpaRepository<DiaryEntry, Long> {
             "GROUP BY story_id) latest ON d.story_id = latest.story_id AND " +
             "d.record_id = latest.max_record_id ORDER BY d.record_id DESC", nativeQuery = true)
     List<DiaryEntry> findLatestEntryOfEachStory();
+
+    DiaryEntry findTopByStoryIdOrderByRecordIdDesc(String storyId);
 }

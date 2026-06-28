@@ -26,4 +26,8 @@ public class SequenceService {
     public String nextConversationSequenceValue(){
         return sequenceRepository.getNextConversationId();
     }
+
+    public  String nextStoryContributionSequenceValue(){
+        return sequenceRepository.getNextStoryContributionId();
+    }
 }

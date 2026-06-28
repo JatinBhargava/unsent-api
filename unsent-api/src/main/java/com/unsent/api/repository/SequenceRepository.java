@@ -15,4 +15,6 @@ public interface SequenceRepository extends JpaRepository<DiaryEntry,Long> {
     @Query(value = "SELECT nextval('conversation_seq')", nativeQuery = true)
     String getNextConversationId();
 
+    @Query(value = "SELECT nextval('story_contributions_seq')", nativeQuery = true)
+    String getNextStoryContributionId();
 }
