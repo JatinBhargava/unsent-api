@@ -2,6 +2,7 @@ package com.unsent.api.service;
 
 import com.unsent.api.dto.DiaryEntryRequestDTO;
 import com.unsent.api.dto.DiaryEntryResponseDTO;
+import com.unsent.api.dto.StoryContributionDTO;
 import com.unsent.api.dto.UserDTO;
 import com.unsent.api.entity.DiaryEntry;
 import com.unsent.api.entity.User;
@@ -86,7 +87,32 @@ public class DiaryService {
                 .collect(Collectors.toList());
     }
 
-    private DiaryEntry findEntryById(Long recordId) {
+    public DiaryEntry getLatestRecordIByStoryId(String storyId){
+        return diaryEntryRepository.findTopByStoryIdOrderByRecordIdDesc(storyId);
+    }
+
+//    public StoryContributionDTO inScribeRequest(Long recordId, DiaryEntryRequestDTO request){
+//
+//        StoryContributionDTO storyContribution = storyContributionService.submitStoryContribution(recordId,request);
+//        // if accept call inscribe method and insert in collab table with accepted
+//        // if reject insert in collab table with rejected
+//        // if withdrawn remove from collab table
+//        return storyContribution;
+//    }
+
+    public DiaryEntryResponseDTO inscribe(Long recordId, DiaryEntryRequestDTO request){
+        DiaryEntry inscribeDiary = findEntryById(recordId);
+        String content =  inscribeDiary.getContent() + " " + request.getContent();
+        DiaryEntry newEntry = new DiaryEntry();
+        BeanUtils.copyProperties(inscribeDiary,newEntry,"recordId");
+        newEntry.setContent(content);
+        newEntry.setCrud_value(CrudOperation.UPDATE.getCode());
+        return toResponse(diaryEntryRepository.save(newEntry));
+    }
+
+
+
+    public DiaryEntry findEntryById(Long recordId) {
         return diaryEntryRepository.findById(recordId)
                 .orElseThrow(() -> new EntityNotFoundException("Diary entry not found: " + recordId));
     }
@@ -107,16 +133,5 @@ public class DiaryService {
                                 "User not found: " + userId
                         ));
 
-    }
-
-    private UserDTO mapToUserDTO(User user) {
-        return UserDTO.builder()
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .displayName(user.getDisplayName())
-                .email(user.getEmail())
-                .gender(user.getGender())
-                .dateOfBirth(user.getDateOfBirth())
-                .build();
     }
 }

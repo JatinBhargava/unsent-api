@@ -2,7 +2,9 @@ package com.unsent.api.controller;
 
 import com.unsent.api.dto.DiaryEntryRequestDTO;
 import com.unsent.api.dto.DiaryEntryResponseDTO;
+import com.unsent.api.dto.StoryContributionDTO;
 import com.unsent.api.service.DiaryService;
+import com.unsent.entity.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +32,18 @@ public class DiaryController {
     @PostMapping
     public ResponseEntity<DiaryEntryResponseDTO> createEntry(@RequestBody DiaryEntryRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(diaryService.createEntry(request));
+    }
+
+    @PutMapping("/inscribe/{recordId}")
+    public ApiResponse inscribe(@PathVariable("recordId") Long recordId, @RequestBody DiaryEntryRequestDTO request) {
+
+        DiaryEntryResponseDTO response = diaryService.inscribe(recordId, request);
+
+        return ApiResponse.builder()
+                .message("Story inscribed successfully")
+                .count(1L)
+                .data(response)
+                .build();
     }
 
     @GetMapping
