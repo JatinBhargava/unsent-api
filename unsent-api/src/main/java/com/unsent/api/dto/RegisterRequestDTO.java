@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.unsent.api.json.GenderDeserializer;
 import com.unsent.util.Gender;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,8 +17,12 @@ import java.time.LocalDate;
 @NoArgsConstructor(force = true)
 public class RegisterRequestDTO {
 
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     @JsonProperty("email")
     final String email;
+    @NotBlank(message = "Password is required")
     @JsonProperty("password")
     final String password;
     @JsonProperty("username")

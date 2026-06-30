@@ -3,6 +3,7 @@ package com.unsent.api.service;
 import com.unsent.api.config.JWTUtil;
 import com.unsent.api.dto.RegisterRequestDTO;
 import com.unsent.api.entity.User;
+import com.unsent.helper.BusinessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,13 +26,17 @@ public class AuthService {
     }
 
     public String registerUser(final RegisterRequestDTO request){
-         if(Optional.ofNullable(userService.findByEmail(request.getEmail())).isPresent()){
-             throw new RuntimeException("User Email ID already present.");
-         }
+
+        if (userService.existsByEmail(request.getEmail()))
+        {
+            throw new BusinessException("User already exist", "E001");
+        }
+
           String hashedPassword = passwordEncoder.encode(request.getPassword());
           userService.saveUser(request.getEmail(),hashedPassword,request.getUsername(),
                   request.getDisplayName(),request.getGender(),request.getDateOfBirth());
           return jwtUtil.generateToken(request.getEmail());
+
     }
 
     public String loginUser(final RegisterRequestDTO request){
