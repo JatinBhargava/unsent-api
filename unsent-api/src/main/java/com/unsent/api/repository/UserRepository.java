@@ -16,5 +16,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Query(value = "SELECT user_id FROM users ORDER BY record_id DESC LIMIT 1", nativeQuery = true)
     Optional<String> findLatestUserId();
 
-
+    boolean existsByEmailIgnoreCase(String email);
 }

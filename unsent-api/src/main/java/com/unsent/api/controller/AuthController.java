@@ -6,6 +6,7 @@ import com.unsent.api.dto.UserDTO;
 import com.unsent.api.entity.User;
 import com.unsent.api.service.AuthService;
 import com.unsent.api.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDTO> registerUser(@RequestBody RegisterRequestDTO request){
+    public ResponseEntity<AuthResponseDTO> registerUser(@Valid @RequestBody RegisterRequestDTO request){
             final String token = authService.registerUser(request);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(new AuthResponseDTO(token));

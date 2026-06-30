@@ -32,14 +32,18 @@ public class UserService {
     }
 
     public UserDTO findByEmail(final String email) {
-      Optional<User> user = userRepository.findTopByEmailIgnoreCaseOrderByRecordIdDesc(email.trim());
-        return UserDTO.builder()
+
+      Optional<User> user = userRepository
+              .findTopByEmailIgnoreCaseOrderByRecordIdDesc(email.trim());
+
+      return UserDTO.builder()
                 .userId(user.get().getUserId())
                 .username(user.get().getUsername())
                 .displayName(user.get().getDisplayName())
                 .gender(user.get().getGender())
                 .dateOfBirth(user.get().getDateOfBirth())
                 .build();
+
     }
 
     public Optional<User> findByEmailOrUsername(final String identifier) {
@@ -91,6 +95,10 @@ public class UserService {
         return user;
     }
 
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmailIgnoreCase(email.trim());
+    }
+
     public void updateProfile(String userId, UserDTO request) {
         Optional<User> user = userRepository.findTopByUserIdOrderByRecordIdDesc(userId);
         user.get().setDisplayName(request.getDisplayName());
@@ -118,6 +126,7 @@ public class UserService {
             throw new IllegalStateException("Existing userId is not numeric: " + currentUserId, exception);
         }
     }
+
 
 
 }
