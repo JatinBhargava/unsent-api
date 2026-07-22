@@ -20,6 +20,7 @@ services:
       - "8080:8080"
     depends_on:
       - postgres
+      - kafka
 
   listener:
     image: jatindocker623/unsent-listener:1.0.0-SNAPSHOT
@@ -28,6 +29,7 @@ services:
       - "8081:8081"
     depends_on:
       - postgres
+      - kafka
 
   batch:
     image: jatindocker623/unsent-batch:1.0.0-SNAPSHOT

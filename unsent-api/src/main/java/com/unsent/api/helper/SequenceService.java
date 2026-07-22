@@ -30,4 +30,8 @@ public class SequenceService {
     public  String nextStoryContributionSequenceValue(){
         return sequenceRepository.getNextStoryContributionId();
     }
+
+    public  String nextNotificationSubscriptionSequenceValue(){
+        return sequenceRepository.getNextStoryContributionId();
+    }
 }
