@@ -12,6 +12,8 @@ import com.unsent.util.CrudOperation;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class DiaryService {
     private final UserService userService;
     private final SequenceService sequenceService;
 
+    @CacheEvict(value = "diaryEntries", key = "'all'")
     public DiaryEntryResponseDTO createEntry(DiaryEntryRequestDTO request) {
         User user = findUserEntityByUserId(request.getUserId());
         DiaryEntry diaryEntry = new DiaryEntry();
@@ -39,6 +42,7 @@ public class DiaryService {
         return toResponse(diaryEntryRepository.save(diaryEntry));
     }
 
+    @Cacheable(value = "diaryEntries", key = "'all'")
     public List<DiaryEntryResponseDTO> getAllEntries() {
         return diaryEntryRepository.findLatestEntryOfEachStory().stream()
                 .map(this::toResponse)
