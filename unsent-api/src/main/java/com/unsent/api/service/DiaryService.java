@@ -44,6 +44,7 @@ public class DiaryService {
 
     @Cacheable(value = "diaryEntries", key = "'all'")
     public List<DiaryEntryResponseDTO> getAllEntries() {
+        System.out.println("Fetching from Db...");
         return diaryEntryRepository.findLatestEntryOfEachStory().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
