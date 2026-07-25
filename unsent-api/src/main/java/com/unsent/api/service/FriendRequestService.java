@@ -10,6 +10,7 @@ import com.unsent.helper.BusinessException;
 import com.unsent.util.FriendRequestStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +60,7 @@ public class FriendRequestService {
         friendRequestRepository.save(friendRequest);
     }
 
+    @Cacheable(value = "recivedRequest", key="'all'")
     public List<FriendRequestDTO> getRecivedRequest(String receiverId){
 
         List<FriendRequest> senderPendingRequest =
@@ -67,6 +69,7 @@ public class FriendRequestService {
         return  senderPendingRequest.stream().map(this::mapSenderandReciverDetails).toList();
     }
 
+    @Cacheable(value = "status", key="'all'")
     public FriendRequestDTO getStatusBetweenSenderandReceiver(String senderId, String reciverId){
 
         String status = "";

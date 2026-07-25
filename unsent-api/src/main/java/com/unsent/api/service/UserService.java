@@ -6,6 +6,7 @@ import com.unsent.api.repository.UserRepository;
 import com.unsent.util.CrudOperation;
 import com.unsent.util.Gender;
 import com.unsent.util.RecordStatus;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Cacheable(value = "users", key="'all'")
     public UserDTO findByEmail(final String email) {
 
       Optional<User> user = userRepository
@@ -79,6 +81,7 @@ public class UserService {
                 });
     }
 
+    @Cacheable(value = "users", key="'all'")
     public UserDTO findByUserId(final String userId) {
         Optional<User> user = userRepository.findTopByUserIdOrderByRecordIdDesc(userId);
         return UserDTO.builder()

@@ -44,6 +44,12 @@ management:
       exposure:
         include: health,info
 
+logging:
+  level:
+    org.springframework.cache: TRACE
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+
 app:
   frontend-url: ${APP_FRONTEND_URL}
   frontend-login-path: ${FRONTEND_LOGIN_PATH:/}
