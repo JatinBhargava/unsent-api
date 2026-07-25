@@ -32,7 +32,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @Cacheable(value = "users", key="'all'")
     public UserDTO findByEmail(final String email) {
 
       Optional<User> user = userRepository
@@ -81,7 +80,6 @@ public class UserService {
                 });
     }
 
-    @Cacheable(value = "users", key="'all'")
     public UserDTO findByUserId(final String userId) {
         Optional<User> user = userRepository.findTopByUserIdOrderByRecordIdDesc(userId);
         return UserDTO.builder()
