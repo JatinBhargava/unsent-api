@@ -6,6 +6,7 @@ import com.unsent.api.entity.Friend;
 import com.unsent.api.repository.FriendRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class FriendService {
         friendRepository.save(friendship);
     }
 
+    @Cacheable(value = "friendShip", key = "'all'")
     public List<FriendDTO> getListOfFriendByUserId(String userId){
         return friendRepository.getFriendListByUserId(userId)
                 .stream()

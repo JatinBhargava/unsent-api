@@ -10,6 +10,7 @@ import com.unsent.api.repository.StoryContributionRepository;
 import com.unsent.util.StoryContributionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,6 +71,7 @@ public class StoryContributionService {
         return !latestEntry.getRecordId().equals(contribution.getParentEntryId());
     }
 
+    @Cacheable(value = "pendingContribution", key="'all'")
     public List<StoryContributionDTO> getPendingContributions(Long recordId) {
 
         DiaryEntry diary = diaryService.findEntryById(recordId);

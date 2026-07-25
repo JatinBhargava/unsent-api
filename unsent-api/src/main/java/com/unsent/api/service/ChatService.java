@@ -8,6 +8,7 @@ import com.unsent.api.helper.SequenceService;
 import com.unsent.api.repository.ConversationRepository;
 import com.unsent.api.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,10 +43,12 @@ public class ChatService {
         );
     }
 
+    @Cacheable(value = "coonversation", key="'all'")
     public List<ChatMessageDTO> getMessagesOfConversation(String conversatiionId){
         return messageService.getConversationMessages(conversatiionId);
     }
 
+    @Cacheable(value = "conversationBwSR", key="'all'")
     public ConversationDTO getConversationIdBetweenSenderandReciver(final String senderId , final String reciverId){
         return conversationService.getConversationIdBetweenSenderandReciver(senderId,reciverId);
     }

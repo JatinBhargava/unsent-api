@@ -50,10 +50,12 @@ public class DiaryService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "diaryEntryById", key="'all'")
     public DiaryEntryResponseDTO getEntryById(Long recordId) {
         return toResponse(findEntryById(recordId));
     }
 
+    @Cacheable(value = "diaryEntries", key = "''all''")
     public List<DiaryEntryResponseDTO> getEntriesByUserId(String userId) {
         findUserByUserId(userId);
         return diaryEntryRepository.findByUserUserId(userId).stream()
@@ -80,11 +82,13 @@ public class DiaryService {
         diaryEntryRepository.delete(diaryEntry);
     }
 
+    @Cacheable(value = "countDairies", key="'all'")
     public long countEntriesByUserId(String userId) {
         findUserByUserId(userId);
         return diaryEntryRepository.countByUserUserId(userId);
     }
 
+    @Cacheable(value = "entries", key="'all'")
     public List<DiaryEntryResponseDTO> searchEntries(String userId, String keyword) {
         findUserByUserId(userId);
         return diaryEntryRepository.findByUserUserIdAndContentContainingIgnoreCase(userId, keyword).stream()
