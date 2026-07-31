@@ -71,7 +71,7 @@ public class StoryContributionService {
         return !latestEntry.getRecordId().equals(contribution.getParentEntryId());
     }
 
-    @Cacheable(value = "pendingContribution", key="'all'")
+    @Cacheable(value = "PENDING-CONTRIBUTION", key="#storyid")
     public List<StoryContributionDTO> getPendingContributions(Long recordId) {
 
         DiaryEntry diary = diaryService.findEntryById(recordId);

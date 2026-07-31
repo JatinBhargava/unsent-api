@@ -34,7 +34,7 @@ public class FriendService {
         friendRepository.save(friendship);
     }
 
-    @Cacheable(value = "friendShip", key = "'all'")
+    @Cacheable(value = "FRIENDSHIP", key = "#friend-user-id")
     public List<FriendDTO> getListOfFriendByUserId(String userId){
         return friendRepository.getFriendListByUserId(userId)
                 .stream()
