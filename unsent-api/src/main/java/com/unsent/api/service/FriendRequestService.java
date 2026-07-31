@@ -60,7 +60,7 @@ public class FriendRequestService {
         friendRequestRepository.save(friendRequest);
     }
 
-    @Cacheable(value = "recivedRequest", key="'all'")
+    @Cacheable(value = "RECIVED-REQUEST", key="#reciver-user-id")
     public List<FriendRequestDTO> getRecivedRequest(String receiverId){
 
         List<FriendRequest> senderPendingRequest =
@@ -69,7 +69,7 @@ public class FriendRequestService {
         return  senderPendingRequest.stream().map(this::mapSenderandReciverDetails).toList();
     }
 
-    @Cacheable(value = "status", key="'all'")
+    @Cacheable(value = "STATUS", key="#status-user-id")
     public FriendRequestDTO getStatusBetweenSenderandReceiver(String senderId, String reciverId){
 
         String status = "";
