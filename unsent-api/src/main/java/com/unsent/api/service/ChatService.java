@@ -43,12 +43,12 @@ public class ChatService {
         );
     }
 
-    @Cacheable(value = "CONVERSATION", key="#conversation-user-id")
+    @Cacheable(value = "CONVERSATION", key="#conversatiionId")
     public List<ChatMessageDTO> getMessagesOfConversation(String conversatiionId){
         return messageService.getConversationMessages(conversatiionId);
     }
 
-    @Cacheable(value = "CONVERSATION-BW-SENDER-RECIVER", key="#conversation-reciver-sender")
+    @Cacheable(value = "CONVERSATION-BW-SENDER-RECIVER", key="#senderId + '_' + #reciverId")
     public ConversationDTO getConversationIdBetweenSenderandReciver(final String senderId , final String reciverId){
         return conversationService.getConversationIdBetweenSenderandReciver(senderId,reciverId);
     }
