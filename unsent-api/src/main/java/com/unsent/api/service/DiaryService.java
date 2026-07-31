@@ -28,7 +28,7 @@ public class DiaryService {
     private final UserService userService;
     private final SequenceService sequenceService;
 
-    @CacheEvict(value = "CREATE-DIARIES-ENTRIES", key = "'all'")
+    @CacheEvict(value = "GET-DIARIES-ENTRIES", allEntries = true)
     public DiaryEntryResponseDTO createEntry(DiaryEntryRequestDTO request) {
         User user = findUserEntityByUserId(request.getUserId());
         DiaryEntry diaryEntry = new DiaryEntry();
@@ -42,7 +42,7 @@ public class DiaryService {
         return toResponse(diaryEntryRepository.save(diaryEntry));
     }
 
-    @Cacheable(value = "GET-DIARIES-ENTRIES", key = "#entryId")
+    @Cacheable(value = "GET-DIARIES-ENTRIES")
     public List<DiaryEntryResponseDTO> getAllEntries() {
         System.out.println("Fetching from Db...");
         return diaryEntryRepository.findLatestEntryOfEachStory().stream()
@@ -50,12 +50,12 @@ public class DiaryService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "GET-DIARIES-ENTRIES-BY-USER", key="#userid")
+    @Cacheable(value = "GET-DIARIES-ENTRIES-BY-USER", key="#recordId")
     public DiaryEntryResponseDTO getEntryById(Long recordId) {
         return toResponse(findEntryById(recordId));
     }
 
-    @Cacheable(value = "diaryEntries", key = "#stories")
+    @Cacheable(value = "diaryEntries", key = "#userId")
     public List<DiaryEntryResponseDTO> getEntriesByUserId(String userId) {
         findUserByUserId(userId);
         return diaryEntryRepository.findByUserUserId(userId).stream()
@@ -82,13 +82,13 @@ public class DiaryService {
         diaryEntryRepository.delete(diaryEntry);
     }
 
-    @Cacheable(value = "COUNT-DIARIES", key="#count")
+    @Cacheable(value = "COUNT-DIARIES", key="#userId")
     public long countEntriesByUserId(String userId) {
         findUserByUserId(userId);
         return diaryEntryRepository.countByUserUserId(userId);
     }
 
-    @Cacheable(value = "FILTER", key="#filter")
+    @Cacheable(value = "FILTER", key="#userId + '_' + #keyword")
     public List<DiaryEntryResponseDTO> searchEntries(String userId, String keyword) {
         findUserByUserId(userId);
         return diaryEntryRepository.findByUserUserIdAndContentContainingIgnoreCase(userId, keyword).stream()
