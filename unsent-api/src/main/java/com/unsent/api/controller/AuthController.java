@@ -1,6 +1,7 @@
 package com.unsent.api.controller;
 
 import com.unsent.api.dto.AuthResponseDTO;
+import com.unsent.api.dto.PublicUserDTO;
 import com.unsent.api.dto.RegisterRequestDTO;
 import com.unsent.api.dto.UserDTO;
 import com.unsent.api.entity.User;
@@ -52,6 +53,13 @@ public class AuthController {
     public UserDTO getUserByUserId(@PathVariable("userId") String userId){
         final UserDTO user = userService.findByUserId(userId);
         return user;
+    }
+
+    // Non-sensitive profile info safe to show to other users (diary author
+    // byline, friends list) — deliberately excludes gender/dateOfBirth/email.
+    @GetMapping("/user/{userId}/public")
+    public PublicUserDTO getPublicUserByUserId(@PathVariable("userId") String userId){
+        return userService.findPublicByUserId(userId);
     }
 
     @PutMapping("/user/{userId}/profile")
