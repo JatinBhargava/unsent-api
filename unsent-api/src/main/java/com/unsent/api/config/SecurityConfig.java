@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,12 +20,15 @@ public class SecurityConfig {
     OAuthSuccessHandler authSuccessHandler;
     @Autowired
     OAuthFailureHandler authFailureHandler;
+    @Autowired
+    JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .exceptionHandling(ex ->
                         ex.authenticationEntryPoint(
@@ -34,7 +38,8 @@ public class SecurityConfig {
                 }))
 
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/auth/**", "/oauth2/**", "/login/**", "/error", "/**")
+                        auth.requestMatchers("/auth/register", "/auth/login", "/oauth2/**", "/login/**",
+                                        "/error", "/", "/health", "/ws-chat/**")
                                 .permitAll().anyRequest().authenticated())
 
                 // OAuth ONLY when explicitly called

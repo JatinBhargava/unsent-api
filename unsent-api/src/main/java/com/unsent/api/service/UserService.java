@@ -1,5 +1,6 @@
 package com.unsent.api.service;
 
+import com.unsent.api.dto.PublicUserDTO;
 import com.unsent.api.dto.UserDTO;
 import com.unsent.api.entity.User;
 import com.unsent.api.repository.UserRepository;
@@ -88,6 +89,18 @@ public class UserService {
                 .displayName(user.get().getDisplayName())
                 .gender(user.get().getGender())
                 .dateOfBirth(user.get().getDateOfBirth())
+                .build();
+    }
+
+    // Minimal, non-sensitive profile info for contexts where a user is
+    // shown to other users (diary author byline, friends list) — must never
+    // include gender/dateOfBirth/email, which are private to the account owner.
+    public PublicUserDTO findPublicByUserId(final String userId) {
+        Optional<User> user = userRepository.findTopByUserIdOrderByRecordIdDesc(userId);
+        return PublicUserDTO.builder()
+                .userId(user.get().getUserId())
+                .username(user.get().getUsername())
+                .displayName(user.get().getDisplayName())
                 .build();
     }
 
