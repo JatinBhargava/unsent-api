@@ -1,5 +1,7 @@
 package com.unsent.api.service;
 
+import com.unsent.api.config.DiaryCacheNames;
+import com.unsent.api.config.EvictDiaryCaches;
 import com.unsent.api.dto.DiaryEntryRequestDTO;
 import com.unsent.api.dto.DiaryEntryResponseDTO;
 import com.unsent.api.dto.StoryContributionDTO;
@@ -12,7 +14,6 @@ import com.unsent.util.CrudOperation;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class DiaryService {
     private final UserService userService;
     private final SequenceService sequenceService;
 
-    @CacheEvict(value = "GET-DIARIES-ENTRIES", allEntries = true)
+    @EvictDiaryCaches
     public DiaryEntryResponseDTO createEntry(DiaryEntryRequestDTO request) {
         User user = findUserEntityByUserId(request.getUserId());
         DiaryEntry diaryEntry = new DiaryEntry();
@@ -42,7 +43,7 @@ public class DiaryService {
         return toResponse(diaryEntryRepository.save(diaryEntry));
     }
 
-    @Cacheable(value = "GET-DIARIES-ENTRIES")
+    @Cacheable(value = DiaryCacheNames.ALL_ENTRIES)
     public List<DiaryEntryResponseDTO> getAllEntries() {
         System.out.println("Fetching from Db...");
         return diaryEntryRepository.findLatestEntryOfEachStory().stream()
@@ -50,12 +51,12 @@ public class DiaryService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "GET-DIARIES-ENTRIES-BY-USER", key="#recordId")
+    @Cacheable(value = DiaryCacheNames.ENTRY_BY_RECORD_ID, key="#recordId")
     public DiaryEntryResponseDTO getEntryById(Long recordId) {
         return toResponse(findEntryById(recordId));
     }
 
-    @Cacheable(value = "diaryEntries", key = "#userId")
+    @Cacheable(value = DiaryCacheNames.ENTRIES_BY_USER, key = "#userId")
     public List<DiaryEntryResponseDTO> getEntriesByUserId(String userId) {
         findUserByUserId(userId);
         return diaryEntryRepository.findByUserUserId(userId).stream()
@@ -63,6 +64,7 @@ public class DiaryService {
                 .collect(Collectors.toList());
     }
 
+    @EvictDiaryCaches
     public DiaryEntryResponseDTO updateEntry(Long recordId, DiaryEntryRequestDTO request) {
         DiaryEntry diaryEntry = findEntryById(recordId);
         User user = findUserEntityByUserId(diaryEntry.getUser().getUserId());
@@ -77,18 +79,19 @@ public class DiaryService {
         return toResponse(diaryEntryRepository.save(newEntry));
     }
 
+    @EvictDiaryCaches
     public void deleteEntry(Long recordId) {
         DiaryEntry diaryEntry = findEntryById(recordId);
         diaryEntryRepository.delete(diaryEntry);
     }
 
-    @Cacheable(value = "COUNT-DIARIES", key="#userId")
+    @Cacheable(value = DiaryCacheNames.COUNT_BY_USER, key="#userId")
     public long countEntriesByUserId(String userId) {
         findUserByUserId(userId);
         return diaryEntryRepository.countByUserUserId(userId);
     }
 
-    @Cacheable(value = "FILTER", key="#userId + '_' + #keyword")
+    @Cacheable(value = DiaryCacheNames.SEARCH, key="#userId + '_' + #keyword")
     public List<DiaryEntryResponseDTO> searchEntries(String userId, String keyword) {
         findUserByUserId(userId);
         return diaryEntryRepository.findByUserUserIdAndContentContainingIgnoreCase(userId, keyword).stream()
@@ -109,6 +112,7 @@ public class DiaryService {
 //        return storyContribution;
 //    }
 
+    @EvictDiaryCaches
     public DiaryEntryResponseDTO inscribe(Long recordId, DiaryEntryRequestDTO request){
         DiaryEntry inscribeDiary = findEntryById(recordId);
         String content =  inscribeDiary.getContent() + " " + request.getContent();
