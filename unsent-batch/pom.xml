@@ -8,9 +8,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<groupId>com.unsent</groupId>
 	<artifactId>unsent-batch</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<name>unsent-batch</name>
 	<description>Batch Application for Unsent — an online diary and reaction platform.</description>
 	<url/>
