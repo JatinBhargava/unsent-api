@@ -16,3 +16,5 @@ unsent-api/docker/
 .DS_Store
 
 INTERVIEW_NOTES.md
+# flatten-maven-plugin output (CI-friendly versions)
+.flattened-pom.xml
