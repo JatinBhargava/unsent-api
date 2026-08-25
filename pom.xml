@@ -7,7 +7,7 @@
 
     <groupId>com.unsent</groupId>
     <artifactId>unsent-core</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -18,6 +18,7 @@
     </modules>
 
     <properties>
+        <revision>1.0.0-SNAPSHOT</revision>
         <java.version>21</java.version>
         <spring.boot.version>4.0.2</spring.boot.version>
         <lombok.version>1.18.32</lombok.version>
@@ -45,6 +46,38 @@
     </dependencyManagement>
 
     <build>
+        <plugins>
+            <!--
+                Without this, the installed POM would still literally say ${revision}
+                and nothing could consume these artifacts. Rewrites it to the real version.
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
         <pluginManagement>
             <plugins>
                 <plugin>
