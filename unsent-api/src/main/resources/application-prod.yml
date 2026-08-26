@@ -59,4 +59,4 @@ app:
     from-address: ${POSTCARD_FROM_ADDRESS}
     from-name: ${POSTCARD_FROM_NAME:Unsent}
     max-per-hour: ${POSTCARD_MAX_PER_HOUR:10}
-    send-as-user: ${POSTCARD_SEND_AS_USER:false}
+    send-as-user: ${POSTCARD_SEND_AS_USER}
