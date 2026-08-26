@@ -18,9 +18,29 @@ spring:
   main:
     allow-circular-references: true
 
+  mail:
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
 app:
   frontend-url: ${APP_FRONTEND_URL}
   frontend-login-path: ${FRONTEND_LOGIN_PATH:/}
   jwt:
     secret: ${JWT_SECRET}
     expiration-ms: 86400000
+  postcard:
+    from-address: ${POSTCARD_FROM_ADDRESS:}
+    from-name: ${POSTCARD_FROM_NAME:Unsent}
+    max-per-hour: ${POSTCARD_MAX_PER_HOUR:10}
+    send-as-user: ${POSTCARD_SEND_AS_USER:false}

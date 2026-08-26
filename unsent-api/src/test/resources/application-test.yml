@@ -12,6 +12,13 @@ spring:
   flyway:
     enabled: false
 
+  # application.yml requires MAIL_* to be present, so the test profile supplies
+  # its own. Nothing here connects — PostcardServiceTest stubs the sender.
+  mail:
+    host: smtp.test
+    username: test
+    password: test
+
   security:
     oauth2:
       client:

@@ -28,6 +28,24 @@ spring:
             scope:
               - email
               - profile
+
+  mail:
+    # Empty defaults on purpose: an instance with no SMTP settings must still boot.
+    # Postcards then fail per-request with a clear message instead of taking the API down.
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
 server:
   port: ${PORT}
 
@@ -37,3 +55,8 @@ app:
   jwt:
     secret: ${JWT_SECRET}
     expiration-ms: 86400000
+  postcard:
+    from-address: ${POSTCARD_FROM_ADDRESS}
+    from-name: ${POSTCARD_FROM_NAME:Unsent}
+    max-per-hour: ${POSTCARD_MAX_PER_HOUR:10}
+    send-as-user: ${POSTCARD_SEND_AS_USER:false}
